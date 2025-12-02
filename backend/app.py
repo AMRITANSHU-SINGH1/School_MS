@@ -62,14 +62,13 @@ class Subject(db.Model):
      subject_id=db.Column(db.String(20),unique=True)
      name=db.Column(db.String(100),nullable=False)
      # specialization=db.Column(db.String(100))
-     # head_id=db.Column(db.String(100))  #this input should be the doctor id 
+     # head_id=db.Column(db.String(100))  #this input should be the teacher id 
      # class_id=db.Column(db.String(20),db.ForeignKey('class.dpt_id'))
 
 class Teacher(db.Model):
      id=db.Column(db.Integer,primary_key=True)
      teacher_id=db.Column(db.String(20),unique=True)
      name=db.Column(db.String(100),nullable=False)
-     # dept_id=db.Column(db.String(20),db.ForeignKey('department.dpt_id'))
      subject_id=db.Column(db.String(20),db.ForeignKey('Subject.subject_id'))
      status=db.Column(db.String(20),default="Active")
      email = db.Column(db.String(120), unique=True, nullable=False)    
@@ -121,9 +120,126 @@ class Diary(db.Model):
     created_at = db.Column(db.DateTime, default=lambda:datetime.now(timezone.utc))
     
     # Relationships
-    
+
+'''------------------LOGIN ROUTES--------------------'''
+@app.route('/admin/login',methods=['GET','POST'])
+def admin_login():
+     if request.method=='POST':
+          username=request.form['username']
+          password=request.form['password']
+
+          admin=Admin.query.filter_by(username=username).first()
+
+          if admin and admin.check_password(password):
+               session['admin_id']=admin.id
+               session['user_type']='admin'
+               flash('Login successful!')
+               return redirect(url_for('admin_dashboard'))
+          else:
+               flash('Invalid username or password')
+
+     return render_template('admin_login.html')
+
+@app.route('/teacher/login',methods=['GET','POST'])
+def teacher_login():
+     if request.method=='POST':
+          email=request.form['email']
+          password=request.form['password']
+
+          teacher=Teacher.query.filter_by(email=email).first()
+          if teacher and teacher.check_password(password) and teacher.status=='Active':
+               session['teacher_id']=teacher.id
+               session['user_type']='teacher'
+               flash('Login successfull!')
+               return redirect(url_for('teacher_dashboard'))
+          else:
+               flash('Invalid email or password or teacher is InActive')
+     return render_template('teacher_login.html')
+
+@app.route('/student/login', methods=['GET', 'POST'])
+def student_login():
+     if request.method == 'POST':
+          email = request.form['email']
+          password = request.form['password']
+
+          student = Student.query.filter_by(email=email).first()
+
+          if student and student.check_password(password):
+               session['student_id'] = student.id
+               session['user_type'] = 'student'
+               flash('Login successful!')
+               return redirect(url_for('student_dashboard'))
+          else:
+               flash('Invalid email or password')
+
+     return render_template('student_login.html')
+
+
+@app.route('/logout')
+def logout():
+     user_type=session.get('user_type')
+     session.clear()
+     flash('You have been logged out')
+
+     if user_type=='admin':
+          return redirect(url_for('admin_login'))
+     elif user_type=='teacher':
+          return redirect(url_for('teacher_login'))
+     else:
+          return redirect(url_for('student_login'))
+     
+if __name__=='__main__':
+     with app.app_context():
+          db.create_all()
+
+          #create the default admin
+
+          admin=Admin.query.filter_by(username='admin').first()
+          if not admin:
+               default_admin=Admin(name='System Administrator',
+                                   username='admin',
+                                   email='admin@SMS.com')
+               default_admin.set_password('admin123')
+               db.session.add(default_admin)
+               db.session.commit()
+               print('Default admin created: username=admin,password=admin123')
+     app.run(debug=True)
 
 
 
 
+'''------------------------ADMIN FEATURES-----------------------------'''
 
+@app.route('/add_teacher', methods=['GET', 'POST'])
+@admin_required
+def add_teacher():
+     subjects=Subject.query.all()
+     if request.method=='POST':
+          name=request.form['name']
+          email=request.form['email']   #added the email
+          password=request.form['password'] #added the password
+          subject_id=request.form['subject_id']
+
+          #check for if the email already existed or not 
+
+          existing_doc=Teacher.query.filter_by(email=email).first()
+
+          if existing_doc:
+               flash("email already registered")
+               return redirect(url_for('add_teacher'))
+
+          new_teacher=Teacher(name=name,subject_id=subject_id,email=email)
+
+          new_teacher.set_password(password)
+          db.session.add(new_teacher)
+          db.session.commit()
+          # creating the doc code
+
+          new_teacher.teacher_id=f'TCH_{new_teacher.id:03d}'
+          db.session.commit()
+
+          flash('teacher added succesfully')
+          # return redirect(url_for('list_teachers'))
+     return render_template('add_teacher.html',subjects=subjects)
+
+t
