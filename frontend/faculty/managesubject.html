@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Subjects - SmartEdu Admin</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-blue': '#0a1a2f',
+            'mid-blue': '#1f3b63',
+            'light-blue-bg': '#2a4a75',
+            'accent': '#d4a056',
+            'white': '#ffffff',
+          },
+          fontFamily: {
+            'sans': ['Open Sans', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a1a2f; }
+    ::-webkit-scrollbar-thumb { background: #1f3b63; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4a056; }
+
+    .footer-slant { clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%); }
+    #footer-slant-container {
+        background: linear-gradient(to bottom right, #0a1a2f 0%, #0a1a2f 50%, transparent 50%, transparent 100%);
+    }
+  </style>
+</head>
+
+<body class="flex min-h-screen bg-dark-blue text-white font-sans">
+
+<!-- SIDEBAR -->
+<aside id="sidebar" class="w-64 bg-dark-blue text-white shadow-xl flex flex-col transition-all duration-300 overflow-hidden fixed h-full z-20">
+    <div class="p-6 flex items-center space-x-3 border-b border-gray-700">
+        <div class="w-8 h-8 rounded bg-accent text-dark-blue flex items-center justify-center font-serif font-bold">A</div>
+        <h1 class="text-xl font-serif text-accent">Admin Portal</h1>
+    </div>
+
+    <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+        <div class="text-xs text-gray-400 uppercase tracking-wider mt-2">Overview</div>
+        <button class="w-full text-left p-3 rounded hover:bg-mid-blue transition">Dashboard</button>
+
+        <div class="text-xs text-gray-400 uppercase tracking-wider mt-4">Academics</div>
+        <button class="w-full text-left p-3 rounded hover:bg-mid-blue transition">Manage Classes</button>
+        <button class="w-full text-left p-3 rounded bg-mid-blue text-accent">Manage Subjects</button>
+
+        <div class="text-xs text-gray-400 uppercase tracking-wider mt-4">People</div>
+        <button class="w-full text-left p-3 rounded hover:bg-mid-blue transition">Faculty / Teachers</button>
+        <button class="w-full text-left p-3 rounded hover:bg-mid-blue transition">Students</button>
+
+        <div class="text-xs text-gray-400 uppercase tracking-wider mt-4">Operations</div>
+        <button class="w-full text-left p-3 rounded hover:bg-mid-blue transition">Course Mapping</button>
+        <button class="w-full text-left p-3 rounded hover:bg-mid-blue transition">Update Schedule</button>
+    </nav>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div id="mainContent" class="flex-1 flex flex-col md:ml-64 min-h-screen transition-all duration-300">
+
+    <!-- HEADER -->
+    <header class="bg-white text-dark-blue shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
+        <!-- Hamburger -->
+        <button onclick="toggleSidebar()" class="mr-4 hover:text-accent transition">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+
+        <h2 class="text-xl font-bold font-serif">Manage Subjects</h2>
+
+        <div class="flex items-center space-x-4">
+            <span class="text-sm font-semibold text-gray-600 hidden md:inline">Administrator</span>
+            <div class="w-10 h-10 rounded-full bg-dark-blue text-white flex items-center justify-center font-bold shadow-md">AD</div>
+        </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main class="p-8">
+
+        <div class="max-w-5xl mx-auto space-y-8">
+
+            <!-- ADD SUBJECT -->
+            <div class="bg-white text-dark-blue p-8 rounded-lg shadow-lg border-t-4 border-mid-blue">
+                <h3 class="text-xl font-serif font-bold mb-6 border-b border-gray-200 pb-2">Add New Subject</h3>
+
+                <div class="flex flex-col md:flex-row gap-6 items-end">
+                    <div class="flex-1">
+                        <label class="block text-sm font-bold mb-2">Subject Name</label>
+                        <input id="subjectInput" placeholder="e.g. Physics"
+                            class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-mid-blue outline-none">
+                    </div>
+
+                    <div class="w-full md:w-1/3">
+                        <label class="block text-sm font-bold mb-2">Subject Code</label>
+                        <input id="codeInput" placeholder="e.g. PHY101"
+                            class="w-full p-3 border border-gray-300 rounded uppercase focus:ring-2 focus:ring-mid-blue outline-none">
+                    </div>
+
+                    <button onclick="addSubject()" 
+                            class="bg-mid-blue text-white px-8 py-3 rounded hover:bg-dark-blue transition font-semibold shadow-lg flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                             stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                  d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        Add Subject
+                    </button>
+                </div>
+            </div>
+
+            <!-- SUBJECT LIST -->
+            <div class="bg-white text-dark-blue p-8 rounded-lg shadow-lg">
+                <div class="flex justify-between items-center mb-6 border-b border-gray-200 pb-2">
+                    <h3 class="text-xl font-serif font-bold">Subject Curriculum</h3>
+                    <span class="text-sm text-gray-600 bg-gray-100 px-3 py-1 rounded-full">Active Subjects</span>
+                </div>
+
+                <div id="subjectList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                    <!-- Example subject -->
+                    <div class="relative group p-5 bg-white border border-gray-200 rounded-lg hover:border-mid-blue hover:shadow-md transition flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 bg-orange-100 text-accent rounded-lg flex items-center justify-center font-bold text-lg">M</div>
+                            <div>
+                                <h4 class="font-bold">Mathematics</h4>
+                                <p class="text-xs text-gray-500 font-mono">MAT202</p>
+                            </div>
+                        </div>
+
+                        <!-- Delete -->
+                        <button onclick="this.closest('.group').remove()" 
+                                class="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition p-1">
+                            ❌
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto">
+        <div id="footer-slant-container">
+            <div class="footer-slant bg-mid-blue text-white pt-24 pb-10 px-8">
+                <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+                    <div>
+                        <h3 class="text-xl font-serif text-accent mb-1">SmartEdu Admin</h3>
+                        <p class="text-xs text-gray-300">Restricted Access Area</p>
+                    </div>
+                    <p class="text-xs text-gray-400">&copy; 2025 SmartEdu Inc.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<!-- ADD SUBJECT SCRIPT -->
+<script>
+function addSubject() {
+    const name = subjectInput.value.trim();
+    const code = codeInput.value.trim();
+    const list = document.getElementById("subjectList");
+
+    if (!name || !code) {
+        alert("Please enter both Subject Name and Code.");
+        return;
+    }
+
+    const initial = name.charAt(0).toUpperCase();
+    const newItem = document.createElement("div");
+
+    newItem.className =
+        "relative group p-5 bg-white border border-gray-200 rounded-lg hover:border-mid-blue hover:shadow-md transition flex items-center justify-between";
+
+    newItem.innerHTML = `
+        <div class="flex items-center space-x-4">
+            <div class="w-10 h-10 bg-orange-100 text-accent rounded-lg flex items-center justify-center font-bold text-lg">
+                ${initial}
+            </div>
+            <div>
+                <h4 class="font-bold">${name}</h4>
+                <p class="text-xs text-gray-500 font-mono">${code.toUpperCase()}</p>
+            </div>
+        </div>
+
+        <button onclick="this.closest('.group').remove()"
+            class="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition p-1">
+            ❌
+        </button>
+    `;
+
+    list.appendChild(newItem);
+
+    subjectInput.value = "";
+    codeInput.value = "";
+}
+</script>
+
+<!-- SIDEBAR TOGGLE -->
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const main = document.getElementById("mainContent");
+
+    if (sidebar.classList.contains("w-64")) {
+        sidebar.classList.replace("w-64", "w-0");
+        main.classList.remove("md:ml-64");
+    } else {
+        sidebar.classList.replace("w-0", "w-64");
+        main.classList.add("md:ml-64");
+    }
+}
+</script>
+
+</body>
+</html>

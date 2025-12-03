@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Update Schedule - SmartEdu Admin</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Config -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-blue': '#0a1a2f',
+            'mid-blue': '#1f3b63',
+            'accent': '#d4a056',
+          },
+          fontFamily: {
+            'sans': ['Open Sans', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a1a2f; }
+    ::-webkit-scrollbar-thumb { background: #1f3b63; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4a056; }
+
+    .footer-slant {
+        clip-path: polygon(0 22%, 100% 0, 100% 100%, 0% 100%);
+    }
+  </style>
+</head>
+
+<body class="flex min-h-screen bg-gray-100 text-dark-blue">
+
+<!-- ================= SIDEBAR ================= -->
+<aside id="sidebar"
+    class="w-64 bg-dark-blue text-white shadow-xl flex flex-col fixed h-full transition-all duration-300 overflow-hidden z-20">
+
+    <div class="p-6 flex items-center space-x-3 border-b border-gray-700">
+        <div class="w-8 h-8 rounded bg-accent text-dark-blue font-serif font-bold flex items-center justify-center">A</div>
+        <h1 class="text-xl font-serif text-accent">Admin Portal</h1>
+    </div>
+
+    <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+
+        <div class="text-xs text-gray-400 uppercase tracking-wider mb-1 mt-2">Overview</div>
+        <button class="p-3 w-full text-left rounded hover:bg-mid-blue transition text-gray-300">Dashboard</button>
+
+        <div class="text-xs text-gray-400 uppercase tracking-wider mb-1 mt-4">Academics</div>
+        <button class="p-3 w-full text-left rounded hover:bg-mid-blue transition text-gray-300">Manage Classes</button>
+        <button class="p-3 w-full text-left rounded hover:bg-mid-blue transition text-gray-300">Manage Subjects</button>
+
+        <div class="text-xs text-gray-400 uppercase tracking-wider mb-1 mt-4">People</div>
+        <button class="p-3 w-full text-left rounded hover:bg-mid-blue transition text-gray-300">Faculty / Teachers</button>
+        <button class="p-3 w-full text-left rounded hover:bg-mid-blue transition text-gray-300">Students</button>
+
+        <div class="text-xs text-gray-400 uppercase tracking-wider mb-1 mt-4">Operations</div>
+        <button class="p-3 w-full text-left rounded hover:bg-mid-blue transition text-gray-300">Course Mapping</button>
+        <button class="p-3 w-full text-left rounded bg-mid-blue text-accent">Update Schedule</button>
+
+    </nav>
+</aside>
+
+<!-- ================= MAIN CONTENT ================= -->
+<div id="mainContent" class="flex flex-col flex-1 md:ml-64 min-h-screen transition-all duration-300 bg-dark-blue">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
+
+        <button onclick="toggleSidebar()" 
+                class="mr-4 text-dark-blue hover:text-accent transition">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                 stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+
+        <h2 class="text-xl font-bold font-serif">Update Schedule</h2>
+
+        <div class="flex items-center space-x-3">
+            <span class="hidden md:block text-gray-600 font-semibold">Administrator</span>
+            <div class="w-10 h-10 bg-dark-blue rounded-full text-white flex items-center justify-center font-bold">AD</div>
+        </div>
+    </header>
+
+    <!-- ================= PAGE CONTENT ================= -->
+    <main class="p-8 flex-grow">
+
+        <div class="max-w-6xl mx-auto space-y-6">
+
+            <!-- Control Bar -->
+            <div class="flex flex-col sm:flex-row justify-between items-center bg-white p-4 rounded-lg shadow border-l-4 border-mid-blue">
+                
+                <div class="flex items-center space-x-4 w-full sm:w-auto">
+                    <span class="font-bold text-sm uppercase">Select Class:</span>
+
+                    <div class="relative sm:w-64 w-full">
+                        <select id="classSelect" class="w-full p-2 pl-3 pr-8 border border-gray-300 rounded font-semibold">
+                            <option>Class 6 - A</option>
+                            <option>Class 7 - A</option>
+                            <option>Class 8 - B</option>
+                            <option>Class 9 - B</option>
+                            <option selected>Class 10 - A</option>
+                        </select>
+                    </div>
+                </div>
+
+                <button onclick="saveSchedule()"
+                        class="mt-4 sm:mt-0 bg-green-600 text-white px-6 py-2 rounded-lg font-bold shadow hover:bg-green-700 flex items-center">
+                    Save Schedule
+                </button>
+            </div>
+
+            <!-- Timetable -->
+            <div class="bg-white p-6 rounded-lg shadow-lg overflow-x-auto">
+
+                <table class="w-full border-collapse min-w-[800px]">
+                    <thead>
+                        <tr class="bg-gray-100 text-gray-600 text-sm uppercase">
+                            <th class="p-3 border w-24">Day</th>
+                            <th class="p-3 border text-center">8–10</th>
+                            <th class="p-3 border text-center">10–11</th>
+                            <th class="p-3 border text-center">11:30–1</th>
+                            <th class="p-3 border text-center">2–3</th>
+                            <th class="p-3 border text-center">3–4</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="text-sm">
+                        <!-- Monday -->
+                        <tr>
+                            <td class="p-3 border font-bold text-mid-blue bg-blue-50 text-center">MON</td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Maths"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Physics"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Chemistry"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="English"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="History"></td>
+                        </tr>
+
+                        <!-- Tuesday -->
+                        <tr>
+                            <td class="p-3 border font-bold text-mid-blue bg-blue-50 text-center">TUE</td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Biology"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Maths"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Sports"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Physics"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Comp. Sci"></td>
+                        </tr>
+
+                        <!-- Wednesday -->
+                        <tr>
+                            <td class="p-3 border font-bold text-mid-blue bg-blue-50 text-center">WED</td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Maths"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="History"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="English"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Chemistry"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Library"></td>
+                        </tr>
+
+                        <!-- Thursday -->
+                        <tr>
+                            <td class="p-3 border font-bold text-mid-blue bg-blue-50 text-center">THU</td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Physics"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Maths"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Comp. Sci"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Biology"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="English"></td>
+                        </tr>
+
+                        <!-- Friday -->
+                        <tr>
+                            <td class="p-3 border font-bold text-mid-blue bg-blue-50 text-center">FRI</td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Chemistry"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Maths"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Art"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="History"></td>
+                            <td class="p-1 border"><input class="w-full p-2 text-center" value="Physics"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+                <p class="text-xs text-gray-400 mt-4 italic">* Click on any cell to edit the subject.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="mt-auto">
+        <div class="footer-slant bg-mid-blue text-white pt-24 pb-10 px-8">
+            <div class="container mx-auto">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-6 md:mb-0">
+                        <h3 class="text-xl font-serif text-accent mb-2">SmartEdu Admin</h3>
+                        <p class="text-xs text-gray-300">Restricted Access Area</p>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                        © 2025 SmartEdu Inc.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+
+<!-- Sidebar Toggle JS -->
+<script>
+function toggleSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const main = document.getElementById("mainContent");
+
+    if (sidebar.classList.contains("w-64")) {
+        sidebar.classList.replace("w-64", "w-0");
+        main.classList.remove("md:ml-64");
+    } else {
+        sidebar.classList.replace("w-0", "w-64");
+        main.classList.add("md:ml-64");
+    }
+}
+</script>
+
+<script>
+function saveSchedule() {
+    const cls = document.getElementById("classSelect").value;
+    alert("Schedule updated for " + cls);
+}
+</script>
+
+</body>
+</html>

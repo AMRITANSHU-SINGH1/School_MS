@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Course Mapping - SmartEdu Admin</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind Configuration -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-blue': '#0a1a2f',
+            'mid-blue': '#1f3b63',
+            'light-blue-bg': '#2a4a75',
+            'accent': '#d4a056',
+          },
+          fontFamily: {
+            'sans': ['Open Sans', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a1a2f; }
+    ::-webkit-scrollbar-thumb { background: #1f3b63; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4a056; }
+
+    .footer-slant {
+        clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%);
+    }
+  </style>
+</head>
+
+<body class="flex min-h-screen bg-dark-blue text-white font-sans">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="w-64 bg-dark-blue text-white shadow-xl flex flex-col transition-all duration-300 overflow-hidden whitespace-nowrap fixed h-full z-20">
+    <div class="p-6 flex items-center space-x-3 border-b border-gray-700">
+      <div class="w-8 h-8 rounded bg-accent text-dark-blue flex items-center justify-center font-serif font-bold flex-shrink-0">A</div>
+      <h1 class="text-xl font-serif text-accent">Admin Portal</h1>
+    </div>
+
+    <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-2">Overview</div>
+      <button class="nav-btn w-full text-left p-3 rounded hover:bg-mid-blue transition-colors flex items-center">
+        <span class="ml-1">Dashboard</span>
+      </button>
+
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-4">Academics</div>
+      <button class="nav-btn w-full text-left p-3 rounded hover:bg-mid-blue transition-colors flex items-center">
+        <span class="ml-1">Manage Classes</span>
+      </button>
+      <button class="nav-btn w-full text-left p-3 rounded hover:bg-mid-blue transition-colors flex items-center">
+        <span class="ml-1">Manage Subjects</span>
+      </button>
+
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-4">People</div>
+      <button class="nav-btn w-full text-left p-3 rounded hover:bg-mid-blue transition-colors flex items-center">
+        <span class="ml-1">Faculty / Teachers</span>
+      </button>
+      <button class="nav-btn w-full text-left p-3 rounded hover:bg-mid-blue transition-colors flex items-center">
+        <span class="ml-1">Students</span>
+      </button>
+
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-4">Operations</div>
+      <button class="nav-btn w-full text-left p-3 rounded hover:bg-mid-blue transition-colors flex items-center bg-mid-blue text-accent">
+        <span class="ml-1">Course Mapping</span>
+      </button>
+      <button class="nav-btn w-full text-left p-3 rounded hover:bg-mid-blue transition-colors flex items-center">
+        <span class="ml-1">Update Schedule</span>
+      </button>
+    </nav>
+  </aside>
+
+
+  <!-- MAIN CONTENT -->
+  <div id="mainContent" class="flex-1 flex flex-col md:ml-64 transition-all duration-300">
+
+    <!-- HEADER -->
+    <header class="bg-white text-dark-blue shadow p-4 flex justify-between items-center sticky top-0 z-10">
+      <button onclick="toggleSidebar()" class="mr-4 hover:text-accent transition">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+             stroke-width="2" stroke="currentColor" class="w-8 h-8">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"/>
+        </svg>
+      </button>
+
+      <h2 class="text-xl font-bold font-serif">Course Mapping</h2>
+
+      <div class="flex items-center space-x-4">
+        <span class="hidden md:inline text-gray-600 font-semibold">Administrator</span>
+        <div class="w-10 h-10 rounded-full bg-dark-blue text-white flex items-center justify-center font-bold">
+          AD
+        </div>
+      </div>
+    </header>
+
+
+    <!-- PAGE CONTENT -->
+    <main class="p-8 bg-dark-blue">
+
+      <div class="max-w-6xl mx-auto space-y-8 text-dark-blue">
+
+        <!-- Mapping Card -->
+        <div class="bg-white p-8 rounded-lg shadow-lg border-t-4 border-accent">
+          <div class="mb-6 border-b pb-2">
+            <h3 class="text-xl font-serif font-bold text-dark-blue">Assign Teacher to Class & Subject</h3>
+            <p class="text-sm text-gray-500 mt-1">Link a faculty member to a specific subject for a class.</p>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div>
+              <label class="block text-sm font-bold mb-2">Select Class</label>
+              <select id="classSelect"
+                      class="w-full p-3 border rounded bg-white text-dark-blue focus:ring-2 focus:ring-accent">
+                <option disabled selected>Choose Class</option>
+                <option>Class 6 - A</option>
+                <option>Class 7 - A</option>
+                <option>Class 8 - B</option>
+                <option>Class 9 - B</option>
+                <option>Class 10 - A</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold mb-2">Select Subject</label>
+              <select id="subjectSelect"
+                      class="w-full p-3 border rounded bg-white text-dark-blue focus:ring-2 focus:ring-accent">
+                <option disabled selected>Choose Subject</option>
+                <option>Mathematics</option>
+                <option>Physics</option>
+                <option>Chemistry</option>
+                <option>English Literature</option>
+                <option>Computer Science</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-sm font-bold mb-2">Assign Teacher</label>
+              <select id="teacherSelect"
+                      class="w-full p-3 border rounded bg-white text-dark-blue focus:ring-2 focus:ring-accent">
+                <option disabled selected>Choose Faculty</option>
+                <option>Dr. Priya (Math)</option>
+                <option>Mr. John Smith (Physics)</option>
+                <option>Ms. Sarah Wilson (English)</option>
+                <option>Mr. Alex Johnson (CS)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="flex justify-end">
+            <button onclick="mapCourse()"
+                    class="bg-accent text-white px-8 py-3 rounded font-bold hover:bg-yellow-600 transition shadow-lg">
+              Map Allocation
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+
+    <!-- FOOTER (fixed spacing) -->
+    <footer class="mt-auto">
+      <div class="footer-slant bg-mid-blue text-white pt-24 pb-10 px-8">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center">
+          <div>
+            <h3 class="text-xl font-serif text-accent mb-2">SmartEdu Admin</h3>
+            <p class="text-xs text-gray-300">Restricted Access Area</p>
+          </div>
+          <p class="text-xs text-gray-400">&copy; 2025 SmartEdu Inc.</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+
+  <!-- JS FUNCTIONS -->
+  <script>
+    function mapCourse() {
+      const cls = classSelect.value;
+      const subject = subjectSelect.value;
+      const teacher = teacherSelect.value;
+
+      if (cls.includes("Choose") || subject.includes("Choose") || teacher.includes("Choose")) {
+        alert("Please select all dropdowns.");
+        return;
+      }
+
+      alert(`Mapped: ${teacher} → ${subject} → ${cls}`);
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const main = document.getElementById("mainContent");
+
+      if (sidebar.classList.contains("w-64")) {
+        sidebar.classList.replace("w-64", "w-0");
+        main.classList.remove("md:ml-64");
+      } else {
+        sidebar.classList.replace("w-0", "w-64");
+        main.classList.add("md:ml-64");
+      }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manage Faculty - SmartEdu Admin</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-blue': '#0a1a2f',
+            'mid-blue': '#1f3b63',
+            'light-blue-bg': '#2a4a75',
+            'accent': '#d4a056',
+            'white': '#ffffff',
+          },
+          fontFamily: {
+            'sans': ['Open Sans', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a1a2f; }
+    ::-webkit-scrollbar-thumb { background: #1f3b63; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4a056; }
+
+    .footer-slant { 
+        clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%);
+    }
+
+    /* FIX: Remove the white background that caused the gap */
+    #footer-slant-container {
+        background: #0a1a2f !important;
+    }
+  </style>
+</head>
+
+<body class="flex min-h-screen bg-dark-blue text-dark-blue font-sans">
+
+  <!-- Sidebar -->
+  <aside id="sidebar" 
+       class="w-64 bg-dark-blue text-white shadow-xl flex flex-col transition-all duration-300 overflow-hidden whitespace-nowrap fixed h-full z-20">
+
+    <div class="p-6 flex items-center space-x-3 border-b border-gray-700">
+        <div class="w-8 h-8 rounded bg-accent text-dark-blue flex items-center justify-center font-serif font-bold flex-shrink-0">A</div>
+        <h1 class="text-xl font-serif text-accent">Admin Portal</h1>
+    </div>
+
+    <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-2">Overview</div>
+        <a class="nav-btn block p-3 rounded hover:bg-mid-blue transition-colors flex items-center text-gray-300">
+            Dashboard
+        </a>
+
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-4">Academics</div>
+        <a  class="nav-btn block p-3 rounded hover:bg-mid-blue transition-colors flex items-center text-gray-300">
+            Manage Classes
+        </a>
+
+        <a class="nav-btn block p-3 rounded hover:bg-mid-blue transition-colors flex items-center text-gray-300">
+            Manage Subjects
+        </a>
+
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-4">People</div>
+        <a class="nav-btn block p-3 rounded bg-mid-blue text-accent flex items-center">
+            Faculty / Teachers
+        </a>
+
+        <a class="nav-btn block p-3 rounded hover:bg-mid-blue transition-colors flex items-center text-gray-300">
+            Students
+        </a>
+
+        <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 mt-4">Operations</div>
+        <a class="nav-btn block p-3 rounded hover:bg-mid-blue transition-colors flex items-center text-gray-300">
+            Course Mapping
+        </a>
+
+        <a class="nav-btn block p-3 rounded hover:bg-mid-blue transition-colors flex items-center text-gray-300">
+            Update Schedule
+        </a>
+
+    </nav>
+
+  </aside>
+
+
+
+  <!-- Main Content -->
+  <div id="mainContent" class="flex-1 flex flex-col md:ml-64 min-h-screen transition-all duration-300">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10">
+
+        <button onclick="toggleSidebar()" class="mr-4 text-dark-blue hover:text-accent transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                <path stroke-linecap="round" stroke-linejoin="round" 
+                      d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
+
+        <h2 class="text-xl font-bold text-dark-blue font-serif">Manage Faculty</h2>
+
+        <div class="flex items-center space-x-4">
+            <span class="text-sm font-semibold text-gray-600 hidden md:inline">Administrator</span>
+            <div class="w-10 h-10 rounded-full bg-dark-blue text-white flex items-center justify-center font-bold shadow-md">
+                AD
+            </div>
+        </div>
+
+    </header>
+
+
+
+
+    <!-- Page Content -->
+    <main class="p-8">
+
+      <div class="max-w-6xl mx-auto space-y-8">
+
+        <!-- Add Faculty Form -->
+        <div class="bg-white p-8 rounded-lg shadow-lg border-t-4 border-mid-blue">
+          <h3 class="text-xl font-serif font-bold text-dark-blue mb-6 border-b border-gray-100 pb-2">
+            Onboard Faculty
+          </h3>
+                
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+
+              <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2">Full Name</label>
+                  <input type="text" id="nameInput" placeholder="e.g. Dr. Priya Sharma" 
+                         class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-mid-blue outline-none">
+              </div>
+
+              <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2">Email Address</label>
+                  <input type="email" id="emailInput" placeholder="e.g. priya@smartedu.com" 
+                         class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-mid-blue outline-none">
+              </div>
+
+              <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2">Designation</label>
+                  <input type="text" id="roleInput" placeholder="e.g. Senior Lecturer" 
+                         class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-mid-blue outline-none">
+              </div>
+
+              <div>
+                  <label class="block text-sm font-bold text-gray-700 mb-2">Employee ID</label>
+                  <input type="text" id="idInput" placeholder="e.g. FAC-2025-01" 
+                         class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-mid-blue outline-none uppercase">
+              </div>
+
+          </div>
+
+          <div class="flex justify-end">
+              <button onclick="addTeacher()" 
+                      class="bg-mid-blue text-white px-8 py-3 rounded hover:bg-dark-blue transition font-semibold shadow-lg flex items-center">
+                  
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" 
+                       stroke-width="2" stroke="currentColor" class="w-5 h-5 mr-2">
+                    <path stroke-linecap="round" stroke-linejoin="round" 
+                          d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 
+                          3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 
+                          12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z" />
+                  </svg>
+
+                  Register Teacher
+              </button>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+
+
+
+
+    <!-- FOOTER (Slant) -->
+    <footer class="mt-auto">
+        <div id="footer-slant-container">
+            <div class="footer-slant bg-mid-blue text-white pt-24 pb-10 px-8">
+                 <div class="container mx-auto">
+                     <div class="flex flex-col md:flex-row justify-between items-center">
+                         <div class="mb-6 md:mb-0">
+                             <h3 class="text-xl font-serif text-accent mb-2">SmartEdu Admin</h3>
+                             <p class="text-xs text-gray-300">Restricted Access Area</p>
+                         </div>
+                         <div class="text-xs text-gray-400">
+                             &copy; 2025 SmartEdu Inc.
+                         </div>
+                     </div>
+                 </div>
+            </div>
+        </div>
+    </footer>
+
+  </div>
+
+
+
+  <!-- Register Teacher -->
+  <script>
+    function addTeacher() {
+        const name = document.getElementById('nameInput').value;
+        const email = document.getElementById('emailInput').value;
+        const role = document.getElementById('roleInput').value;
+        const id = document.getElementById('idInput').value;
+
+        if (!name || !email || !role || !id) {
+            alert("Please fill in all fields.");
+            return;
+        }
+
+        alert("Teacher Registered Successfully:\n" 
+              + name + " (" + id.toUpperCase() + ")");
+
+        document.getElementById('nameInput').value = "";
+        document.getElementById('emailInput').value = "";
+        document.getElementById('roleInput').value = "";
+        document.getElementById('idInput').value = "";
+    }
+  </script>
+
+  <!-- Sidebar Toggle -->
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const mainContent = document.getElementById("mainContent");
+
+      const isOpen = sidebar.classList.contains("w-64");
+
+      if (isOpen) {
+        sidebar.classList.add("w-0");
+        sidebar.classList.remove("w-64");
+        mainContent.classList.remove("md:ml-64");
+      } else {
+        sidebar.classList.add("w-64");
+        sidebar.classList.remove("w-0");
+        mainContent.classList.add("md:ml-64");
+      }
+    }
+  </script>
+
+</body>
+</html>

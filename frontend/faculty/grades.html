@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grades</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-blue': '#0a1a2f',
+            'mid-blue': '#1f3b63',
+            'light-blue-bg': '#2a4a75',
+            'accent': '#d4a056',
+            'white': '#ffffff',
+          },
+          fontFamily: {
+            'sans': ['Open Sans', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Open Sans', sans-serif; }
+    /* Custom scrollbar for dark theme feel */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a1a2f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f3b63;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #d4a056;
+    }
+
+    .footer-slant {
+        clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%);
+    }
+
+    footer {
+        padding-top: 0 !important; /* Ensure the top content aligns with the clip path area */
+        margin-top: 0 !important;
+    }
+
+    #main-wrapper {
+        z-index: 10;
+    }
+    #footer-slant-container {
+        position: relative;
+        background: 
+            linear-gradient(
+                to bottom right, 
+                #0A1A2F 0%, /* Start with dark-blue (the previous page background) */
+                #0A1A2F 50%, /* Hold dark-blue for half the footer height */
+                transparent 50%, 
+                transparent 100%
+            ); 
+    }
+  </style>
+</head>
+
+<body class="flex min-h-screen bg-white text-dark-blue font-sans">
+
+  <!-- Collapsible Sidebar -->
+  <aside id="sidebar" class="w-64 bg-dark-blue text-white shadow-xl flex flex-col transition-all duration-300 overflow-hidden whitespace-nowrap">
+    <div class="p-6 flex items-center space-x-3">
+      <h1 class="text-2xl font-serif text-accent">SmartEdu</h1>
+    </div>
+
+    <nav class="flex-grow p-4">
+      <ul class="space-y-4 text-lg font-semibold">
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
+            Dashboard
+        </li>
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
+            Attendance
+        </li>
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
+            Assignments
+        </li>
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
+            Resources
+        </li>
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
+            Digital Diary
+        </li>
+        <!-- Active State for Grades Page -->
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors bg-mid-blue text-accent">
+            Grades
+        </li>
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
+            Announcements
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <div class="flex-1 flex flex-col h-screen overflow-y-auto">
+    <!-- HEADER -->
+    <header class="p-4 flex justify-between items-center border-b-2 border-gray-200 bg-white shadow-md sticky top-0 z-10">
+      <!-- Left side: Hamburger + Name -->
+      <div class="flex items-center">
+        <button onclick="toggleSidebar()" class="text-3xl text-mid-blue mr-4 ">☰</button>
+        <div class="text-xl font-body font-bold">
+          Dr. Priya <span class="font-normal text-gray-600">| Faculty of Mathematics</span>
+        </div>
+      </div>
+      
+      <!-- Right side: CS020 + Icon + Bell -->
+      <div class="flex items-center space-x-4">
+        <!-- HOVER INTERACTION ADDED HERE -->
+        <div class="relative group cursor-pointer z-50">
+            <!-- Profile Icon -->
+            <div class="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center font-bold shadow-md border-2 border-transparent group-hover:border-mid-blue transition-all">P</div>
+            
+            <!-- Tooltip / Hover Card -->
+            <div class="absolute right-0 mt-3 w-72 bg-white rounded-xl shadow-2xl p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 border border-gray-100 z-50">
+                
+                <!-- Decorative Arrow pointing up -->
+                <div class="absolute -top-2 right-4 w-4 h-4 bg-white transform rotate-45 border-l border-t border-gray-100"></div>
+
+                <!-- Card Content -->
+                <div class="flex flex-col items-center text-center">
+                    <!-- Larger Avatar in Card -->
+                    <div class="w-20 h-20 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif text-3xl font-bold mb-4 shadow-inner">
+                        P
+                    </div>
+                    
+                    <h3 class="font-serif font-bold text-xl text-dark-blue">Dr. Priya</h3>
+                    <div class="w-full h-px bg-gray-200 my-3"></div>
+                    
+                    <div class="space-y-2 w-full text-left pl-2">
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Subject</p>
+                            <p class="text-mid-blue font-semibold">Mathematics</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Designation</p>
+                            <p class="text-mid-blue font-semibold">Faculty of Mathematics</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- END HOVER INTERACTION -->
+        <button class="text-accent hover:text-dark-blue transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8">
+            <path fill-rule="evenodd" d="M5.25 9a6.75 6.75 0 0113.5 0v.75c0 2.123.8 4.057 2.118 5.52a.75.75 0 01-.297 1.206c-1.544.57-3.16.99-4.831 1.243a3.75 3.75 0 11-7.48 0 24.585 24.585 0 01-4.831-1.244.75.75 0 01-.298-1.205A8.217 8.217 0 005.25 9.75V9zm4.502 8.9a2.25 2.25 0 104.496 0 25.057 25.057 0 01-4.496 0z" clip-rule="evenodd" />
+            </svg>
+        </button>
+      </div>
+    </header>
+    <!-- GRADES SECTION -->
+    <main class="flex-1 p-8 bg-dark-blue">
+        <!-- White Card Container -->
+        <div class="bg-white p-8 rounded-lg shadow-2xl min-h-[500px]">
+            <h2 class="text-2xl font-serif font-bold mb-8 text-mid-blue border-b border-gray-200 pb-4 flex items-center">
+                <!-- Chart Bar Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mr-3 text-accent">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z" />
+                </svg>
+                Enter Student Grades
+            </h2>
+            
+            <!-- Filter / Context Info -->
+            <div class="flex justify-between items-center mb-6">
+                <div class="text-sm font-semibold text-gray-500">
+                    Subject: <span class="text-dark-blue">Mathematics</span> | Section: <span class="text-dark-blue">Class 6</span>
+                </div>
+            </div>
+
+            <!-- Students Table -->
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="text-gray-500 border-b border-gray-200 bg-gray-50/50">
+                            <th class="py-3 px-4 font-bold text-sm uppercase tracking-wide">Student Name</th>
+                            <th class="py-3 px-4 font-bold text-sm uppercase tracking-wide">Roll Number</th>
+                            <th class="py-3 px-4 font-bold text-sm uppercase tracking-wide w-48">Grade</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-dark-blue">
+                        <!-- Student 1 -->
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-mid-blue/10 text-mid-blue flex items-center justify-center text-xs font-bold mr-3">JD</div>
+                                <span class="font-semibold">John Doe</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025001</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <!-- Student 2 -->
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 text-dark-blue flex items-center justify-center text-xs font-bold mr-3">JS</div>
+                                <span class="font-semibold">Jane Smith</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025002</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <!-- Student 3 -->
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-mid-blue/10 text-mid-blue flex items-center justify-center text-xs font-bold mr-3">RJ</div>
+                                <span class="font-semibold">Robert Johnson</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025003</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+
+                        <!-- Student 4 -->
+                        <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 text-dark-blue flex items-center justify-center text-xs font-bold mr-3">EW</div>
+                                <span class="font-semibold">Emily Williams</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025004</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <!-- Student 5 -->
+                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-mid-blue/10 text-mid-blue flex items-center justify-center text-xs font-bold mr-3">MB</div>
+                                <span class="font-semibold">Michael Brown</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025005</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <!-- Student 6 -->
+                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 text-dark-blue flex items-center justify-center text-xs font-bold mr-3">SW</div>
+                                <span class="font-semibold">Sarah Wilson</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025006</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <!-- Student 7 -->
+                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-mid-blue/10 text-mid-blue flex items-center justify-center text-xs font-bold mr-3">JA</div>
+                                <span class="font-semibold">James Anderson</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025007</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <!-- Student 8 -->
+                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 text-dark-blue flex items-center justify-center text-xs font-bold mr-3">OT</div>
+                                <span class="font-semibold">Olivia Taylor</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025008</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <!-- Student 9 -->
+                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-mid-blue/10 text-mid-blue flex items-center justify-center text-xs font-bold mr-3">WT</div>
+                                <span class="font-semibold">William Thomas</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025009</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+                         <!-- Student 10 -->
+                         <tr class="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                            <td class="py-4 px-4 flex items-center">
+                                <div class="w-8 h-8 rounded-full bg-accent/20 text-dark-blue flex items-center justify-center text-xs font-bold mr-3">SM</div>
+                                <span class="font-semibold">Sophia Martinez</span>
+                            </td>
+                            <td class="py-4 px-4 text-gray-600">STU2025010</td>
+                            <td class="py-4 px-4">
+                                <select class="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none bg-white">
+                                    <option value="" disabled selected>Select</option>
+                                    <option value="A">A</option>
+                                    <option value="B">B</option>
+                                    <option value="C">C</option>
+                                    <option value="D">D</option>
+                                    <option value="F">F</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Upload Button Area -->
+            <div class="mt-8 flex justify-end">
+                <button onclick="uploadGrades()" class="bg-mid-blue text-white px-8 py-3 rounded-lg font-semibold hover:bg-accent transition-all shadow-lg flex items-center transform hover:-translate-y-0.5">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    Upload Grades
+                </button>
+            </div>
+            
+        </div>
+    </main>
+    <footer class="bg-dark-blue text-white pt-0 pb-6 mt-0 mb-0  ">
+    
+    <!-- WRAPPER DIV WITH CLIP-PATH CLASS APPLIED -->
+    <div class="footer-slant bg-dark-blue pt-16 pb-10" style="background-color: #1F3B63;">
+        
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- DISCLAIMER SECTION - Prominent Red Text -->
+            <div class="mb-0 p-4 border border-danger bg-mid-blue/30 rounded-lg">
+                <p class="text-danger font-semibold text-sm leading-relaxed text-center">
+                    <span class="text-white font-bold">DISCLAIMER:</span> The Data Shown on the Parents/Students Portal may not represent the Real Time Data, but is shown for the Immediate Reference to Parents/Students. For Confirmation and Clarification, please contact the respective Departments.
+                </p>
+            </div>
+            <!-- END DISCLAIMER -->
+
+            <!-- LOGO, LINKS, AND SOCIAL ICONS -->
+            <div class="flex flex-col md:flex-row md:justify-between items-center space-y-6 md:space-y-0 mt-4">
+                
+                <!-- 1. Branding and Copyright -->
+                <div class="text-center md:text-left space-y-1">
+                    <h3 class="text-xl font-serif text-accent font-bold">CPSEdu</h3>
+                    <p class="text-xs text-gray-400">© All Rights Reserved 2024.</p>
+                    <p class="text-xs text-gray-500">A product of the Computer Science Education Initiative.</p>
+                </div>
+                <!-- 3. Social Media Links -->
+                <div class="flex space-x-4">
+                    
+                    <a href="https://instagram.com/cpsedu" target="_blank" class="text-gray-400 hover:text-accent transition-colors">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path fill="currentColor" fill-rule="evenodd" d="M3 8a5 5 0 0 1 5-5h8a5 5 0 0 1 5 5v8a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V8Zm5-3a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3V8a3 3 0 0 0-3-3H8Zm7.597 2.214a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2h-.01a1 1 0 0 1-1-1ZM12 9a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm-5 3a5 5 0 1 1 10 0 5 5 0 0 1-10 0Z" clip-rule="evenodd"/>
+                        </svg>
+
+                    </a>
+
+                    <!-- X / Twitter Link (Outline) -->
+                    <a href="https://twitter.com/cpsedu" target="_blank" class="text-gray-400 hover:text-accent transition-colors">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" d="M22 5.892a8.178 8.178 0 0 1-2.355.635 4.074 4.074 0 0 0 1.8-2.235 8.343 8.343 0 0 1-2.605.981A4.13 4.13 0 0 0 15.85 4a4.068 4.068 0 0 0-4.1 4.038c0 .31.035.618.105.919A11.705 11.705 0 0 1 3.4 4.734a4.006 4.006 0 0 0 1.268 5.392 4.165 4.165 0 0 1-1.859-.5v.05A4.057 4.057 0 0 0 6.1 13.635a4.192 4.192 0 0 1-1.856.07 4.108 4.108 0 0 0 3.831 2.807A8.36 8.36 0 0 1 2 18.184 11.732 11.732 0 0 0 8.291 20 11.502 11.502 0 0 0 19.964 8.5c0-.177 0-.349-.012-.523A8.143 8.143 0 0 0 22 5.892Z" clip-rule="evenodd"/>
+                        </svg>
+
+                    </a>
+
+                    <!-- YouTube Link (Outline) -->
+                    <a href="https://youtube.com/cpsedu" target="_blank" class="text-gray-400 hover:text-accent transition-colors">
+                    <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                    <path fill-rule="evenodd" d="M21.7 8.037a4.26 4.26 0 0 0-.789-1.964 2.84 2.84 0 0 0-1.984-.839c-2.767-.2-6.926-.2-6.926-.2s-4.157 0-6.928.2a2.836 2.836 0 0 0-1.983.839 4.225 4.225 0 0 0-.79 1.965 30.146 30.146 0 0 0-.2 3.206v1.5a30.12 30.12 0 0 0 .2 3.206c.094.712.364 1.39.784 1.972.604.536 1.38.837 2.187.848 1.583.151 6.731.2 6.731.2s4.161 0 6.928-.2a2.844 2.844 0 0 0 1.985-.84 4.27 4.27 0 0 0 .787-1.965 30.12 30.12 0 0 0 .2-3.206v-1.516a30.672 30.672 0 0 0-.202-3.206Zm-11.692 6.554v-5.62l5.4 2.819-5.4 2.801Z" clip-rule="evenodd"/>
+                    </svg>
+
+                </a>
+
+                    <!-- Official Website Link (Outline Globe) -->
+                    <a href="#" target="_blank" class="text-gray-400 hover:text-accent transition-colors">
+                        <svg class="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="m6 10.5237-2.27075.6386C3.29797 11.2836 3 11.677 3 12.125V20c0 .5523.44772 1 1 1h2V10.5237Zm12 0 2.2707.6386c.4313.1213.7293.5147.7293.9627V20c0 .5523-.4477 1-1 1h-2V10.5237Z"/>
+                        <path fill-rule="evenodd" d="M12.5547 3.16795c-.3359-.22393-.7735-.22393-1.1094 0l-6.00002 4c-.45952.30635-.5837.92722-.27735 1.38675.30636.45953.92723.5837 1.38675.27735L8 7.86853V21h8V7.86853l1.4453.96352c.0143.00957.0289.01873.0435.02746.1597.09514.3364.14076.5112.1406.3228-.0003.6395-.15664.832-.44541.3064-.45953.1822-1.0804-.2773-1.38675l-6-4ZM10 12c0-.5523.4477-1 1-1h2c.5523 0 1 .4477 1 1s-.4477 1-1 1h-2c-.5523 0-1-.4477-1-1Zm1-4c-.5523 0-1 .44772-1 1s.4477 1 1 1h2c.5523 0 1-.44772 1-1s-.4477-1-1-1h-2Z" clip-rule="evenodd"/>
+                        </svg>
+
+                    </a>
+                </div>
+                
+            </div>
+
+            <!-- FINAL SEPARATOR -->
+            <div class="mt-4 border-t border-mid-blue pt-4 w-full">
+             <hr>
+
+                <p class="text-center text-xs text-gray-500">
+                    CPSEdu is dedicated to fostering academic excellence and providing essential student resources.
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+  </div>
+
+  <script>
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      // Toggle between full width (w-64) and zero width (w-0)
+      if (sidebar.classList.contains('w-64')) {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-0');
+      } else {
+        sidebar.classList.remove('w-0');
+        sidebar.classList.add('w-64');
+      }
+    }
+
+    function uploadGrades() {
+        // Simple animation/feedback simulation
+        const btn = document.querySelector('button[onclick="uploadGrades()"]');
+        const originalText = btn.innerHTML;
+        
+        btn.innerHTML = `<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg> Uploading...`;
+        
+        setTimeout(() => {
+            btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5 mr-2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" /></svg> Uploaded!`;
+            btn.classList.remove('bg-mid-blue');
+            btn.classList.add('bg-green-600');
+            
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+                btn.classList.add('bg-mid-blue');
+                btn.classList.remove('bg-green-600');
+                alert("Grades have been successfully uploaded to the system.");
+            }, 1500);
+        }, 1500);
+    }
+  </script>
+
+</body>
+</html>
