@@ -30,6 +30,7 @@
                         <a href="{{ url_for('marks_home') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Marks</a>
                         <a href="{{ url_for('teacher_assignments') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Assignments</a>
                         <a href="{{ url_for('teacher_diary') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Diary</a>
+                        <a href="{{ url_for('teacher_notifications') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Notify</a>
                     {% elif session.get('user_type') == 'student' %}
                         <a href="{{ url_for('student_dashboard') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Dashboard</a>
                         <a href="{{ url_for('student_my_subjects') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Subjects</a>

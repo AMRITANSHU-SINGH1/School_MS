@@ -1068,6 +1068,49 @@ def get_class_students(class_id):
 # ADD THESE ROUTES TO YOUR app.py (after Phase 2 routes)
 
 # ==================== STUDENT DASHBOARD ====================
+# @app.route('/student/dashboard')
+# @student_required
+# def student_dashboard():
+#     student_id = session.get('student_id')
+#     stud = Student.query.get(student_id)
+    
+#     if not stud.class_id:
+#         flash('You are not assigned to any class yet. Please contact admin.', 'warning')
+#         return render_template('student_dashboard.html', student=stud, stats={})
+    
+#     # Get student's subjects
+#     class_subjects = ClassSubject.query.filter_by(class_id=stud.class_id).all()
+    
+#     # Calculate attendance percentage
+#     total_attendance = Attendance.query.filter_by(student_id=stud.student_id).count()
+#     present_count = Attendance.query.filter_by(student_id=stud.student_id, status='Present').count()
+#     attendance_percentage = (present_count / total_attendance * 100) if total_attendance > 0 else 0
+    
+#     # Get pending assignments
+#     all_assignments = Assignment.query.filter_by(class_id=stud.class_id).all()
+#     submitted_ids = [s.assignment_id for s in stud.submissions]
+#     pending_assignments = [a for a in all_assignments if a.id not in submitted_ids and a.due_date >= date.today()]
+    
+#     # Get recent marks
+#     recent_marks = Marks.query.filter_by(student_id=stud.student_id).order_by(Marks.date.desc()).limit(5).all()
+    
+#     # Get latest notifications
+#     notifications = Notification.query.filter_by(class_id=stud.class_id).order_by(Notification.date.desc()).limit(5).all()
+    
+#     stats = {
+#         'attendance_percentage': round(attendance_percentage, 2),
+#         'total_subjects': len(class_subjects),
+#         'pending_assignments': len(pending_assignments),
+#         'total_marks_entries': Marks.query.filter_by(student_id=stud.student_id).count()
+#     }
+    
+#     return render_template('student_dashboard.html',
+#                          student=stud,
+#                          stats=stats,
+#                          recent_marks=recent_marks,
+#                          pending_assignments=pending_assignments,
+#                          notifications=notifications)
+
 @app.route('/student/dashboard')
 @student_required
 def student_dashboard():
@@ -1076,7 +1119,12 @@ def student_dashboard():
     
     if not stud.class_id:
         flash('You are not assigned to any class yet. Please contact admin.', 'warning')
-        return render_template('student_dashboard.html', student=stud, stats={})
+        return render_template('student_dashboard.html', 
+                             student=stud, 
+                             stats={},
+                             recent_marks=[],
+                             pending_assignments=[],
+                             notifications=[])
     
     # Get student's subjects
     class_subjects = ClassSubject.query.filter_by(class_id=stud.class_id).all()
@@ -1086,10 +1134,16 @@ def student_dashboard():
     present_count = Attendance.query.filter_by(student_id=stud.student_id, status='Present').count()
     attendance_percentage = (present_count / total_attendance * 100) if total_attendance > 0 else 0
     
-    # Get pending assignments
+    # Get pending assignments (not submitted and not overdue)
+    today = date.today()
     all_assignments = Assignment.query.filter_by(class_id=stud.class_id).all()
     submitted_ids = [s.assignment_id for s in stud.submissions]
-    pending_assignments = [a for a in all_assignments if a.id not in submitted_ids and a.due_date >= date.today()]
+    
+    # Only assignments that are NOT submitted AND due date is today or future
+    pending_assignments = [
+        a for a in all_assignments 
+        if a.id not in submitted_ids and a.due_date >= today
+    ]
     
     # Get recent marks
     recent_marks = Marks.query.filter_by(student_id=stud.student_id).order_by(Marks.date.desc()).limit(5).all()
@@ -1109,7 +1163,8 @@ def student_dashboard():
                          stats=stats,
                          recent_marks=recent_marks,
                          pending_assignments=pending_assignments,
-                         notifications=notifications)
+                         notifications=notifications,
+                         today=today)
 
 
 # ==================== MY SUBJECTS ====================
@@ -1274,6 +1329,140 @@ def student_performance():
 
 
 # ==================== ASSIGNMENTS ====================
+# @app.route('/student/assignments')
+# @student_required
+# def student_assignments():
+#     student_id = session.get('student_id')
+#     stud = Student.query.get(student_id)
+    
+#     if not stud.class_id:
+#         flash('You are not assigned to any class yet!', 'warning')
+#         return redirect(url_for('student_dashboard'))
+    
+#     # Get all assignments for student's class
+#     all_assignments = Assignment.query.filter_by(class_id=stud.class_id).order_by(Assignment.due_date.desc()).all()
+    
+#     # Categorize assignments
+#     pending = []
+#     submitted = []
+#     graded = []
+#     overdue = []
+    
+#     for assignment in all_assignments:
+#         submission = Submission.query.filter_by(
+#             assignment_id=assignment.id,
+#             student_id=stud.student_id
+#         ).first()
+        
+#         if submission:
+#             if submission.status == 'Graded':
+#                 graded.append({'assignment': assignment, 'submission': submission})
+#             else:
+#                 submitted.append({'assignment': assignment, 'submission': submission})
+#         else:
+#             if assignment.due_date < date.today():
+#                 overdue.append(assignment)
+#             else:
+#                 pending.append(assignment)
+    
+#     return render_template('student_assignments.html',
+#                          student=stud,
+#                          pending=pending,
+#                          submitted=submitted,
+#                          graded=graded,
+#                          overdue=overdue)
+
+
+# @app.route('/student/assignment/<int:assignment_id>')
+# @student_required
+# def view_assignment(assignment_id):
+#     """View assignment details"""
+#     student_id = session.get('student_id')
+#     stud = Student.query.get(student_id)
+    
+#     assignment = Assignment.query.get_or_404(assignment_id)
+    
+#     # Check if student is in this class
+#     if assignment.class_id != stud.class_id:
+#         flash('Unauthorized access', 'error')
+#         return redirect(url_for('student_dashboard'))
+    
+#     # Check if already submitted
+#     submission = Submission.query.filter_by(
+#         assignment_id=assignment_id,
+#         student_id=stud.student_id
+#     ).first()
+    
+#     return render_template('view_assignment.html',
+#                          student=stud,
+#                          assignment=assignment,
+#                          submission=submission)
+
+
+# @app.route('/student/submit_assignment/<int:assignment_id>', methods=['GET', 'POST'])
+# @student_required
+# def submit_assignment(assignment_id):
+#     """Submit an assignment"""
+#     student_id = session.get('student_id')
+#     stud = Student.query.get(student_id)
+    
+#     assignment = Assignment.query.get_or_404(assignment_id)
+    
+#     if assignment.class_id != stud.class_id:
+#         flash('Unauthorized access', 'error')
+#         return redirect(url_for('student_dashboard'))
+    
+#     # Check if already submitted
+#     existing = Submission.query.filter_by(
+#         assignment_id=assignment_id,
+#         student_id=stud.student_id
+#     ).first()
+    
+#     if existing:
+#         flash('You have already submitted this assignment!', 'warning')
+#         return redirect(url_for('view_assignment', assignment_id=assignment_id))
+    
+#     if request.method == 'POST':
+#         submission_link = request.form.get('submission_link', '')
+        
+#         # Handle file upload
+#         file_path = None
+#         if 'file' in request.files:
+#             file = request.files['file']
+#             if file and file.filename and allowed_file(file.filename):
+#                 filename = secure_filename(file.filename)
+#                 filename = f"{stud.student_id}_{datetime.now().strftime('%Y%m%d%H%M%S')}_{filename}"
+#                 filepath = os.path.join(app.config['UPLOAD_FOLDER'], 'submissions', filename)
+#                 file.save(filepath)
+#                 file_path = filepath
+        
+#         # Must have either link or file
+#         if not submission_link and not file_path:
+#             flash('Please provide either a submission link or upload a file', 'error')
+#             return redirect(url_for('submit_assignment', assignment_id=assignment_id))
+        
+#         # Determine if late
+#         status = 'Late' if date.today() > assignment.due_date else 'Submitted'
+        
+#         new_submission = Submission(
+#             assignment_id=assignment_id,
+#             student_id=stud.student_id,
+#             submission_link=submission_link,
+#             file_path=file_path,
+#             status=status
+#         )
+        
+#         db.session.add(new_submission)
+#         db.session.commit()
+        
+#         flash('Assignment submitted successfully!', 'success')
+#         return redirect(url_for('student_assignments'))
+    
+#     return render_template('submit_assignment.html',
+#                          student=stud,
+#                          assignment=assignment)
+
+
 @app.route('/student/assignments')
 @student_required
 def student_assignments():
@@ -1284,40 +1473,58 @@ def student_assignments():
         flash('You are not assigned to any class yet!', 'warning')
         return redirect(url_for('student_dashboard'))
     
+    # Get filter from query params
+    filter_type = request.args.get('filter', 'all')
+    
     # Get all assignments for student's class
     all_assignments = Assignment.query.filter_by(class_id=stud.class_id).order_by(Assignment.due_date.desc()).all()
     
-    # Categorize assignments
-    pending = []
-    submitted = []
-    graded = []
-    overdue = []
+    # Prepare unified assignment list with submission info
+    assignments = []
+    today = date.today()
     
     for assignment in all_assignments:
+        # Check if student has submitted this assignment
         submission = Submission.query.filter_by(
             assignment_id=assignment.id,
             student_id=stud.student_id
         ).first()
         
+        # Determine status and if overdue
+        is_overdue = assignment.due_date < today and not submission
+        
         if submission:
-            if submission.status == 'Graded':
-                graded.append({'assignment': assignment, 'submission': submission})
-            else:
-                submitted.append({'assignment': assignment, 'submission': submission})
+            status = submission.status  # 'Submitted', 'Graded', 'Late'
+        elif is_overdue:
+            status = 'Overdue'
         else:
-            if assignment.due_date < date.today():
-                overdue.append(assignment)
-            else:
-                pending.append(assignment)
+            status = 'Pending'
+        
+        # Create item dict
+        item = {
+            'assignment': assignment,
+            'submission': submission,
+            'status': status,
+            'is_overdue': is_overdue
+        }
+        
+        # Apply filter
+        if filter_type == 'all':
+            assignments.append(item)
+        elif filter_type == 'pending' and status == 'Pending':
+            assignments.append(item)
+        elif filter_type == 'submitted' and submission and submission.status == 'Submitted':
+            assignments.append(item)
+        elif filter_type == 'graded' and submission and submission.status == 'Graded':
+            assignments.append(item)
+        elif filter_type == 'overdue' and (status == 'Overdue' or (submission and submission.status == 'Late')):
+            assignments.append(item)
     
     return render_template('student_assignments.html',
                          student=stud,
-                         pending=pending,
-                         submitted=submitted,
-                         graded=graded,
-                         overdue=overdue)
-
-
+                         assignments=assignments,
+                         filter=filter_type,
+                         today=today)
 @app.route('/student/assignment/<int:assignment_id>')
 @student_required
 def view_assignment(assignment_id):
@@ -1338,10 +1545,15 @@ def view_assignment(assignment_id):
         student_id=stud.student_id
     ).first()
     
+    # Check if overdue
+    is_overdue = assignment.due_date < date.today()
+    
     return render_template('view_assignment.html',
                          student=stud,
                          assignment=assignment,
-                         submission=submission)
+                         submission=submission,
+                         is_overdue=is_overdue,
+                         today=date.today())
 
 
 @app.route('/student/submit_assignment/<int:assignment_id>', methods=['GET', 'POST'])
@@ -1353,6 +1565,7 @@ def submit_assignment(assignment_id):
     
     assignment = Assignment.query.get_or_404(assignment_id)
     
+    # Verify student is in the correct class
     if assignment.class_id != stud.class_id:
         flash('Unauthorized access', 'error')
         return redirect(url_for('student_dashboard'))
@@ -1368,7 +1581,7 @@ def submit_assignment(assignment_id):
         return redirect(url_for('view_assignment', assignment_id=assignment_id))
     
     if request.method == 'POST':
-        submission_link = request.form.get('submission_link', '')
+        submission_link = request.form.get('submission_link', '').strip()
         
         # Handle file upload
         file_path = None
@@ -1387,12 +1600,13 @@ def submit_assignment(assignment_id):
             return redirect(url_for('submit_assignment', assignment_id=assignment_id))
         
         # Determine if late
-        status = 'Late' if date.today() > assignment.due_date else 'Submitted'
+        today = date.today()
+        status = 'Late' if today > assignment.due_date else 'Submitted'
         
         new_submission = Submission(
             assignment_id=assignment_id,
             student_id=stud.student_id,
-            submission_link=submission_link,
+            submission_link=submission_link if submission_link else None,
             file_path=file_path,
             status=status
         )
@@ -1400,13 +1614,17 @@ def submit_assignment(assignment_id):
         db.session.add(new_submission)
         db.session.commit()
         
-        flash('Assignment submitted successfully!', 'success')
+        flash(f'Assignment submitted successfully! Status: {status}', 'success')
         return redirect(url_for('student_assignments'))
+    
+    # GET request - show form
+    is_overdue = assignment.due_date < date.today()
     
     return render_template('submit_assignment.html',
                          student=stud,
-                         assignment=assignment)
-
+                         assignment=assignment,
+                         is_overdue=is_overdue,
+                         today=date.today())
 
 # ==================== DIARY ====================
 @app.route('/student/diary')
