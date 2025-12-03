@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Marks{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">Select Class & Subject for Marks</h2>
+<div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for cs in my_classes %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ cs.class_obj.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ cs.subject.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                    <a href="{{ url_for('add_marks', class_subject_id=cs.id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">Add Marks</a>
+                    <a href="{{ url_for('view_marks', class_subject_id=cs.id) }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg">View Marks</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

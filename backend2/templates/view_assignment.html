@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}Assignment Details{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">{{ assignment.title }}</h2>
+
+<div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+        <div>
+            <p class="text-gray-600"><strong>Subject:</strong> {{ assignment.class_subject.subject.name }}</p>
+            <p class="text-gray-600"><strong>Due Date:</strong> {{ assignment.due_date }}</p>
+        </div>
+        <div>
+            <p class="text-gray-600"><strong>Total Marks:</strong> {{ assignment.total_marks }}</p>
+            <p class="text-gray-600"><strong>Posted:</strong> {{ assignment.created_at.strftime('%Y-%m-%d') }}</p>
+        </div>
+    </div>
+    <div class="border-t border-gray-200 pt-4">
+        <p class="text-gray-600 font-semibold mb-2">Description:</p>
+        <p class="text-gray-800">{{ assignment.description }}</p>
+    </div>
+    {% if assignment.attachment_path %}
+    <div class="mt-4">
+        <a href="{{ url_for('static', filename=assignment.attachment_path.replace('static/', '')) }}" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg inline-block">Download Attachment</a>
+    </div>
+    {% endif %}
+</div>
+
+{% if submission %}
+<div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="bg-green-500 text-white px-6 py-3 font-semibold">Your Submission</div>
+    <div class="p-6">
+        <p class="text-gray-600 mb-2"><strong>Submitted:</strong> {{ submission.submission_date.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p class="mb-2">
+            <strong>Status:</strong> 
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ 'green' if submission.status == 'Graded' else 'blue' }}-100 text-{{ 'green' if submission.status == 'Graded' else 'blue' }}-800">
+                {{ submission.status }}
+            </span>
+        </p>
+        {% if submission.submission_link %}
+        <p class="text-gray-600 mb-2"><strong>Link:</strong> <a href="{{ submission.submission_link }}" target="_blank" class="text-blue-500 hover:underline">{{ submission.submission_link }}</a></p>
+        {% endif %}
+        {% if submission.file_path %}
+        <p class="text-gray-600 mb-2"><strong>File:</strong> <a href="{{ url_for('static', filename=submission.file_path.replace('static/', '')) }}" class="text-blue-500 hover:underline">View File</a></p>
+        {% endif %}
+        {% if submission.marks_obtained %}
+        <p class="text-gray-600 mb-2"><strong>Marks:</strong> <span class="text-lg font-bold">{{ submission.marks_obtained }}/{{ assignment.total_marks }}</span></p>
+        {% endif %}
+        {% if submission.feedback %}
+        <div class="mt-4 p-4 bg-blue-50 rounded">
+            <p class="font-semibold text-gray-800">Teacher Feedback:</p>
+            <p class="text-gray-700 mt-1">{{ submission.feedback }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% else %}
+<div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+    <p class="text-yellow-800 mb-2">You have not submitted this assignment yet.</p>
+    <a href="{{ url_for('submit_assignment', assignment_id=assignment.id) }}" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg inline-block">Submit Now</a>
+</div>
+{% endif %}
+{% endblock %}

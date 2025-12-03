@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Grade Submission{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">Grade Submission</h2>
+
+<div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+    <p class="text-gray-600 mb-2"><strong>Student:</strong> {{ submission.student.name }}</p>
+    <p class="text-gray-600 mb-2"><strong>Assignment:</strong> {{ submission.assignment.title }}</p>
+    <p class="text-gray-600 mb-2"><strong>Submitted:</strong> {{ submission.submission_date.strftime('%Y-%m-%d %H:%M') }}</p>
+    
+    {% if submission.submission_link %}
+    <p class="text-gray-600 mb-2"><strong>Link:</strong> 
+        <a href="{{ submission.submission_link }}" target="_blank" class="text-blue-500 hover:underline">{{ submission.submission_link }}</a>
+    </p>
+    {% endif %}
+    
+    {% if submission.file_path %}
+    <p class="text-gray-600 mb-2"><strong>File:</strong> 
+        <a href="{{ url_for('static', filename=submission.file_path.replace('static/', '')) }}" class="text-blue-500 hover:underline">Download</a>
+    </p>
+    {% endif %}
+</div>
+
+<form method="post" class="bg-white shadow-lg rounded-lg p-6">
+    <div class="mb-4">
+        <label class="block text-gray-700 font-semibold mb-2">Marks Obtained (out of {{ submission.assignment.total_marks }})</label>
+        <input name="marks_obtained" type="number" step="0.01" value="{{ submission.marks_obtained if submission.marks_obtained else '' }}" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+    </div>
+
+    <div class="mb-6">
+        <label class="block text-gray-700 font-semibold mb-2">Feedback</label>
+        <textarea name="feedback" rows="4" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">{{ submission.feedback if submission.feedback else '' }}</textarea>
+    </div>
+
+    <div class="flex gap-4">
+        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-lg font-semibold">Save Grade</button>
+        <a href="{{ url_for('view_submissions', assignment_id=submission.assignment_id) }}" class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-semibold">Back</a>
+    </div>
+</form>
+{% endblock %}

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>All Doctors</title>
+     <style>
+          body {
+               font-family: Arial, sans-serif;
+               max-width: 1200px;
+               margin: 20px auto;
+               padding: 20px;
+               background-color: #f5f5f5;
+          }
+
+          .container {
+               background: white;
+               padding: 30px;
+               border-radius: 10px;
+               box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+          }
+
+          h1 {
+               color: #333;
+               text-align: center;
+               margin-bottom: 30px;
+          }
+          .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #1976d2;
+            text-decoration: none;
+        }
+
+          .search-bar {
+               display: flex;
+               justify-content: flex-end;
+               margin-bottom: 15px;
+          }
+
+          .search-bar input[type="text"] {
+               padding: 8px 14px;
+               border: 1px solid #ccc;
+               border-radius: 3px 0 0 3px;
+               font-size: 15px;
+          }
+
+          .search-bar button {
+               display: none;
+          }
+
+          table {
+               width: 100%;
+               border-collapse: collapse;
+               margin-top: 20px;
+          }
+
+          th {
+               background: #2196F3;
+               color: white;
+               padding: 12px;
+               text-align: left;
+               font-weight: 500;
+          }
+
+          td {
+               padding: 12px;
+               border-bottom: 1px solid #ddd;
+          }
+
+          tr:hover {
+               background: #f5f5f5;
+          }
+
+          .actions {
+               display: flex;
+               gap: 10px;
+          }
+
+          .btn {
+               padding: 6px 12px;
+               border-radius: 3px;
+               text-decoration: none;
+               font-size: 14px;
+               cursor: pointer;
+          }
+
+          .btn-update {
+               background: #ff9800;
+               color: white;
+          }
+
+          .btn-update:hover {
+               background: #f57c00;
+          }
+
+          .btn-delete {
+               background: #f44336;
+               color: white;
+          }
+
+          .btn-delete:hover {
+               background: #d32f2f;
+          }
+
+          .btn-add {
+               display: inline-block;
+               margin-top: 20px;
+               padding: 10px 20px;
+               background: #4CAF50;
+               color: white;
+               border-radius: 5px;
+               text-decoration: none;
+          }
+
+          .btn-add:hover {
+               background: #357a38;
+          }
+     </style>
+     <script>
+          function filterDoctors() {
+               let input = document.getElementById('doctorSearch');
+               let filter = input.value.toLowerCase();
+               let table = document.getElementById('doctorsTable');
+               let tr = table.getElementsByTagName('tr');
+               for (let i = 1; i < tr.length; i++) {
+                    let tdArray = tr[i].getElementsByTagName('td');
+                    let rowText = '';
+                    for (let j = 0; j < tdArray.length; j++) {
+                         rowText += tdArray[j].innerText.toLowerCase() + ' ';
+                    }
+                    if (rowText.indexOf(filter) > -1) {
+                         tr[i].style.display = '';
+                    } else {
+                         tr[i].style.display = 'none';
+                    }
+               }
+          }
+     </script>
+</head>
+
+<body>
+     <div class="container">
+          <a href="{{ url_for('admin_dashboard') }}" class="back-link">&larr; Back to Dashboard</a>
+          <h1>All Doctors</h1>
+          <div class="search-bar">
+               <input type="text" id="doctorSearch" onkeyup="filterDoctors()"
+                    placeholder="Search by name, email, specialization...">
+          </div>
+          <table id="doctorsTable">
+               <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Specialization</th>
+                    <th>Dept</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+               </tr>
+               {% for doc in doctors %}
+               <tr>
+                    <td>{{doc.doc_id}}</td>
+                    <td>{{doc.name}}</td>
+                    <td>{{doc.email}}</td>
+                    <td>{{doc.spec}}</td>
+                    <td>{{doc.dept_id}}</td>
+                    <td>{{doc.status}}</td>
+                    <td class="actions">
+                         <a href="/update/{{doc.id}}" class="btn btn-update">Update</a>
+                         <a href="/delete/{{doc.id}}" class="btn btn-delete">Delete</a>
+
+                    </td>
+               </tr>
+               {% endfor %}
+          </table>
+          <a href="/add_doctor" class="btn-add">+ Add Another Doctor</a>
+     </div>
+</body>
+
+</html>

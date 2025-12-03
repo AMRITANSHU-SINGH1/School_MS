@@ -188,6 +188,67 @@ def logout():
      else:
           return redirect(url_for('student_login'))
      
+'''------------------------ADMIN FEATURES-----------------------------'''
+
+@app.route('/add_teacher', methods=['GET', 'POST'])
+@admin_required
+def add_teacher():
+     subjects=Subject.query.all()
+     if request.method=='POST':
+          name=request.form['name']
+          email=request.form['email']   #added the email
+          password=request.form['password'] #added the password
+          subject_id=request.form['subject_id']
+
+          #check for if the email already existed or not 
+
+          existing_teacher=Teacher.query.filter_by(email=email).first()
+
+          if existing_teacher:
+               flash("email already registered")
+               return redirect(url_for('add_teacher'))
+
+          new_teacher=Teacher(name=name,subject_id=subject_id,email=email)
+
+          new_teacher.set_password(password)
+          db.session.add(new_teacher)
+          db.session.commit()
+
+          new_teacher.teacher_id=f'TCH_{new_teacher.id:03d}'
+          db.session.commit()
+
+          flash('teacher added succesfully')
+          # return redirect(url_for('list_teachers'))
+     return render_template('add_teacher.html',subjects=subjects)
+
+@app.route('/teachers')
+@admin_required
+def list_teachers():
+     teachers = Teacher.query.all()
+     subjects=Subject.query.all()
+     return render_template('list_teachers.html',teachers=teachers)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__=='__main__':
      with app.app_context():
           db.create_all()
@@ -204,42 +265,3 @@ if __name__=='__main__':
                db.session.commit()
                print('Default admin created: username=admin,password=admin123')
      app.run(debug=True)
-
-
-
-
-'''------------------------ADMIN FEATURES-----------------------------'''
-
-@app.route('/add_teacher', methods=['GET', 'POST'])
-@admin_required
-def add_teacher():
-     subjects=Subject.query.all()
-     if request.method=='POST':
-          name=request.form['name']
-          email=request.form['email']   #added the email
-          password=request.form['password'] #added the password
-          subject_id=request.form['subject_id']
-
-          #check for if the email already existed or not 
-
-          existing_doc=Teacher.query.filter_by(email=email).first()
-
-          if existing_doc:
-               flash("email already registered")
-               return redirect(url_for('add_teacher'))
-
-          new_teacher=Teacher(name=name,subject_id=subject_id,email=email)
-
-          new_teacher.set_password(password)
-          db.session.add(new_teacher)
-          db.session.commit()
-          # creating the doc code
-
-          new_teacher.teacher_id=f'TCH_{new_teacher.id:03d}'
-          db.session.commit()
-
-          flash('teacher added succesfully')
-          # return redirect(url_for('list_teachers'))
-     return render_template('add_teacher.html',subjects=subjects)
-
-t

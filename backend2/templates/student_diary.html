@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}Class Diary{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">Class Diary</h2>
+
+<div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Homework</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Instructions</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for d in diaries %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ d.date }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ d.class_subject.subject.name if d.class_subject else '' }}</td>
+                <td class="px-6 py-4 text-sm text-gray-900">{{ d.notes }}</td>
+                <td class="px-6 py-4 text-sm text-gray-900">{{ d.homework }}</td>
+                <td class="px-6 py-4 text-sm text-gray-900">{{ d.instructions }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,369 @@
+# Student Management System - Backend Implementation Guide
+
+## 📋 Project Overview
+A complete ERP-based Student Management System for schools with three user roles: Admin, Teacher, and Student.
+
+---
+
+## 🗂️ Database Structure
+
+### **Core Tables:**
+1. **Admin** - System administrators
+2. **Grade** - Grade levels (Grade 1, 2, 3...)
+3. **Subject** - Subjects (Math, English, Science...)
+4. **Classes** - Class sections (Class 3-A, 3-B...)
+5. **ClassSubject** - Junction table (Which teacher teaches which subject in which class)
+6. **Teacher** - Teacher accounts
+7. **Student** - Student accounts
+
+### **Activity Tables:**
+8. **Attendance** - Daily attendance records
+9. **Marks** - Exam marks and grades
+10. **Assignment** - Assignments created by teachers
+11. **Submission** - Student assignment submissions
+12. **Diary** - Daily class diary entries
+13. **Notification** - Class notifications
+
+---
+
+## 🔐 Authentication System
+
+### **Login Endpoints:**
+- `/admin/login` - Admin login
+- `/teacher/login` - Teacher login
+- `/student/login` - Student login
+- `/logout` - Universal logout
+
+### **Decorators:**
+- `@admin_required` - Protects admin routes
+- `@teacher_required` - Protects teacher routes
+- `@student_required` - Protects student routes
+
+### **Default Admin Credentials:**
+- Username: `admin`
+- Password: `admin123`
+- Email: `admin@sms.com`
+
+---
+
+## 👨‍💼 Admin Features
+
+### **Dashboard**
+- `GET /admin/dashboard` - View statistics
+
+### **Grade Management**
+- `GET /admin/grades` - List all grades
+- `POST /admin/add_grade` - Create new grade
+  - Fields: `name`, `level`
+
+### **Subject Management**
+- `GET /admin/subjects` - List all subjects
+- `POST /admin/add_subject` - Create new subject
+  - Fields: `name`, `description`
+
+### **Class Management**
+- `GET /admin/classes` - List all classes
+- `POST /admin/add_class` - Create new class
+  - Fields: `name`, `section`, `grade_id`, `head` (teacher_id)
+
+### **Teacher Management**
+- `GET /admin/teachers` - List all teachers
+- `POST /admin/add_teacher` - Create new teacher
+  - Fields: `name`, `email`, `password`, `phone`
+  - Auto-generates: `teacher_id` (TCH_001, TCH_002...)
+
+### **Student Management**
+- `GET /admin/students` - List all students
+- `POST /admin/add_student` - Create new student
+  - Fields: `name`, `email`, `password`, `age`, `gender`, `contact_info`, `parent_name`, `parent_phone`, `class_id`
+  - Auto-generates: `student_id` (STU2024_001, STU2024_002...)
+
+### **Class-Subject Assignment**
+- `GET /admin/class_subjects` - View all assignments
+- `POST /admin/assign_subject` - Assign subject to class with teacher
+  - Fields: `class_id`, `subject_id`, `teacher_id`
+- `POST /admin/delete_class_subject/<id>` - Remove assignment
+
+---
+
+## 👨‍🏫 Teacher Features
+
+### **Dashboard**
+- `GET /teacher/dashboard` - View overview and statistics
+- `GET /teacher/my_classes` - View all classes and subjects taught
+
+### **Attendance Management**
+- `GET /teacher/attendance` - Select class for attendance
+- `GET /teacher/mark_attendance/<class_subject_id>` - Mark attendance form
+- `POST /teacher/mark_attendance/<class_subject_id>` - Submit attendance
+  - Fields: `date`, `status_{student_id}` (Present/Absent/Late), `remarks_{student_id}`
+- `GET /teacher/attendance_report` - View attendance reports
+- `POST /teacher/attendance_report` - Filter by date range
+
+### **Marks Management**
+- `GET /teacher/marks` - Select class for marks entry
+- `GET /teacher/add_marks/<class_subject_id>` - Marks entry form
+- `POST /teacher/add_marks/<class_subject_id>` - Submit marks
+  - Fields: `exam_type`, `total_marks`, `date`, `marks_{student_id}`, `remarks_{student_id}`
+- `GET /teacher/view_marks/<class_subject_id>` - View all marks
+
+### **Assignment Management**
+- `GET /teacher/assignments` - List all assignments
+- `GET /teacher/create_assignment` - Create assignment form
+- `POST /teacher/create_assignment` - Submit new assignment
+  - Fields: `title`, `description`, `due_date`, `total_marks`, `class_subject_id`, `attachment` (file)
+- `GET /teacher/assignment/<id>/submissions` - View all submissions
+- `GET /teacher/grade_submission/<submission_id>` - Grade submission form
+- `POST /teacher/grade_submission/<submission_id>` - Submit grade
+  - Fields: `marks_obtained`, `feedback`
+
+### **Diary Management**
+- `GET /teacher/diary` - List all diary entries
+- `GET /teacher/create_diary` - Create diary form
+- `POST /teacher/create_diary` - Submit diary entry
+  - Fields: `date`, `class_subject_id`, `notes`, `homework`, `instructions`
+
+### **Notification Management**
+- `GET /teacher/notifications` - List sent notifications
+- `GET /teacher/send_notification` - Send notification form
+- `POST /teacher/send_notification` - Submit notification
+  - Fields: `title`, `message`, `class_id`, `is_urgent` (checkbox)
+
+---
+
+## 👨‍🎓 Student Features
+
+### **Dashboard**
+- `GET /student/dashboard` - View overview
+  - Shows: Attendance %, pending assignments, recent marks, notifications
+
+### **Subjects**
+- `GET /student/my_subjects` - View all subjects in class
+
+### **Attendance**
+- `GET /student/attendance` - View all attendance records
+  - Shows: Overall stats, subject-wise breakdown
+- `GET /student/attendance/monthly` - View by month
+  - Query params: `month`, `year`
+
+### **Marks & Performance**
+- `GET /student/marks` - View all marks
+  - Shows: Subject-wise marks, averages
+- `GET /student/performance` - Graphical performance view
+  - Returns chart data for frontend
+
+### **Assignments**
+- `GET /student/assignments` - View all assignments
+  - Categories: Pending, Submitted, Graded, Overdue
+- `GET /student/assignment/<id>` - View assignment details
+- `GET /student/submit_assignment/<id>` - Submission form
+- `POST /student/submit_assignment/<id>` - Submit assignment
+  - Fields: `submission_link` OR `file` (upload)
+
+### **Diary**
+- `GET /student/diary` - View all diary entries
+- `GET /student/diary/today` - View today's diary
+
+### **Notifications**
+- `GET /student/notifications` - View all class notifications
+
+### **Profile**
+- `GET /student/profile` - View student profile
+
+---
+
+## 📊 API Endpoints (for Charts/AJAX)
+
+### **Teacher APIs**
+- `GET /api/teacher/class/<class_id>/students` - Get students in class (JSON)
+
+### **Student APIs**
+- `GET /api/student/attendance_data` - Monthly attendance data (JSON)
+- `GET /api/student/marks_data` - Subject-wise marks data (JSON)
+
+---
+
+## 📁 File Upload Configuration
+
+### **Upload Folders:**
+- `static/uploads/assignments/` - Teacher assignment files
+- `static/uploads/submissions/` - Student submission files
+
+### **Allowed Extensions:**
+- `pdf`, `doc`, `docx`, `txt`, `zip`, `jpg`, `jpeg`, `png`
+
+### **File Naming:**
+- Assignments: `{timestamp}_{filename}`
+- Submissions: `{student_id}_{timestamp}_{filename}`
+
+---
+
+## 🔄 Workflow Examples
+
+### **Admin Workflow:**
+1. Create Grade (e.g., Grade 3)
+2. Create Subjects (Math, English, Science)
+3. Create Class (Class 3-A in Grade 3)
+4. Add Teachers
+5. Add Students and assign to Class 3-A
+6. Assign subjects to Class 3-A with teachers:
+   - Math → Teacher John
+   - English → Teacher Mary
+
+### **Teacher Workflow:**
+1. Login → See dashboard
+2. Select class-subject combination
+3. Mark attendance for students
+4. Add marks for exams
+5. Create assignments with deadlines
+6. View submissions and grade them
+7. Create daily diary entries
+8. Send notifications to class
+
+### **Student Workflow:**
+1. Login → See dashboard with overview
+2. View attendance percentage
+3. Check marks and performance
+4. See pending assignments
+5. Submit assignments (link or file)
+6. Check daily diary for homework
+7. View notifications from teachers
+
+---
+
+## 🔍 Key Relationships
+
+### **Many-to-Many:**
+- **Class ↔ Subject** (via ClassSubject)
+- One class has many subjects
+- One subject is taught in many classes
+
+### **One-to-Many:**
+- **Grade → Classes** (One grade has many sections)
+- **Class → Students** (One class has many students)
+- **Teacher → ClassSubjects** (One teacher teaches many class-subjects)
+- **Student → Attendance** (One student has many attendance records)
+- **Student → Marks** (One student has many marks)
+- **Assignment → Submissions** (One assignment has many submissions)
+
+---
+
+## 🛠️ Setup Instructions
+
+### **1. Install Dependencies:**
+```bash
+pip install flask flask-sqlalchemy werkzeug
+```
+
+### **2. Project Structure:**
+```
+project/
+├── app.py (main file)
+├── templates/ (HTML files - handled by frontend team)
+├── static/
+│   └── uploads/
+│       ├── assignments/
+│       └── submissions/
+└── SMS.db (auto-created)
+```
+
+### **3. Run Application:**
+```bash
+python app.py
+```
+
+### **4. First Time Setup:**
+- Database tables are auto-created
+- Default admin account is created automatically
+- Login at: `http://localhost:5000/admin/login`
+
+---
+
+## 📝 Implementation Phases
+
+### **Phase 1: Foundation ✅**
+- All models created
+- Authentication system
+- Admin CRUD operations
+- Grade, Subject, Class management
+- Teacher and Student management
+- Class-Subject assignment
+
+### **Phase 2: Teacher Features ✅**
+- Attendance marking and reports
+- Marks entry and viewing
+- Assignment creation and grading
+- Diary entries
+- Notifications
+
+### **Phase 3: Student Features ✅**
+- Dashboard with statistics
+- View attendance and performance
+- View marks with charts
+- Assignment submission
+- View diary and notifications
+
+---
+
+## 🎯 Next Steps for You
+
+### **Backend Complete - Focus on Frontend:**
+1. Create HTML templates for all routes
+2. Add CSS/JavaScript for interactivity
+3. Implement charts using Chart.js or similar
+4. Add form validations
+5. Style with Bootstrap/Tailwind
+
+### **Testing Checklist:**
+- [ ] Admin can create grades, subjects, classes
+- [ ] Admin can add teachers and students
+- [ ] Admin can assign subjects to classes
+- [ ] Teacher can mark attendance
+- [ ] Teacher can add marks
+- [ ] Teacher can create and grade assignments
+- [ ] Teacher can create diary entries
+- [ ] Student can view all information
+- [ ] Student can submit assignments
+- [ ] File uploads work correctly
+
+---
+
+## 🚀 Advanced Features (Optional)
+
+### **Future Enhancements:**
+1. **Bulk Upload:** CSV import for students/teachers
+2. **Reports:** PDF export for report cards
+3. **Email:** Send notifications via email
+4. **Parent Portal:** Separate parent login
+5. **Fee Management:** Track fee payments
+6. **Timetable:** Class schedules
+7. **Leave Management:** Student/teacher leave requests
+8. **Exams:** Exam schedule and hall tickets
+9. **Library:** Book issue/return tracking
+10. **Analytics:** Advanced performance analytics
+
+---
+
+## ⚠️ Important Notes
+
+1. **Security:** Change `app.secret_key` in production
+2. **Database:** Use PostgreSQL/MySQL for production instead of SQLite
+3. **File Storage:** Consider cloud storage (AWS S3) for files
+4. **Validation:** Add server-side validation for all inputs
+5. **Error Handling:** Add try-catch blocks for database operations
+6. **Rate Limiting:** Implement to prevent abuse
+7. **Logging:** Add logging for debugging
+8. **Backup:** Regular database backups
+
+---
+
+## 📞 Support
+
+The backend is **100% complete** with all features implemented. The frontend team can now:
+- Create HTML templates for each route
+- Use the provided data structures
+- Call API endpoints for dynamic data
+- Implement file upload forms
+- Add charts using the JSON API endpoints
+
+**All routes return data in a format ready for frontend consumption!**

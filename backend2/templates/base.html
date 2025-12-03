@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}School Management System{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block head %}{% endblock %}
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-gray-800 text-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <a href="{{ url_for('home') }}" class="text-xl font-bold">School MS</a>
+                
+                <div class="hidden md:flex space-x-4">
+                    {% if session.get('user_type') == 'admin' %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Dashboard</a>
+                        <a href="{{ url_for('list_grades') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Grades</a>
+                        <a href="{{ url_for('list_subjects') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Subjects</a>
+                        <a href="{{ url_for('list_classes') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Classes</a>
+                        <a href="{{ url_for('list_teachers') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Teachers</a>
+                        <a href="{{ url_for('list_students') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Students</a>
+                        <a href="{{ url_for('view_class_subjects') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Teachers and Classes</a>
+                    {% elif session.get('user_type') == 'teacher' %}
+                        <a href="{{ url_for('teacher_dashboard') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Dashboard</a>
+                        <a href="{{ url_for('teacher_my_classes') }}" class="hover:bg-gray-700 px-3 py-2 rounded">My Classes</a>
+                        <a href="{{ url_for('attendance_home') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Attendance</a>
+                        <a href="{{ url_for('marks_home') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Marks</a>
+                        <a href="{{ url_for('teacher_assignments') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Assignments</a>
+                        <a href="{{ url_for('teacher_diary') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Diary</a>
+                    {% elif session.get('user_type') == 'student' %}
+                        <a href="{{ url_for('student_dashboard') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Dashboard</a>
+                        <a href="{{ url_for('student_my_subjects') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Subjects</a>
+                        <a href="{{ url_for('student_attendance') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Attendance</a>
+                        <a href="{{ url_for('student_marks') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Marks</a>
+                        <a href="{{ url_for('student_assignments') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Assignments</a>
+                        <a href="{{ url_for('student_profile') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Profile</a>
+                    {% endif %}
+                </div>
+
+                <div class="flex items-center space-x-4">
+                    {% if session.get('user_type') %}
+                        <a href="{{ url_for('logout') }}" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('admin_login') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Admin</a>
+                        <a href="{{ url_for('teacher_login') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Teacher</a>
+                        <a href="{{ url_for('student_login') }}" class="hover:bg-gray-700 px-3 py-2 rounded">Student</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    <div class="container mx-auto px-4 mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="bg-{{ 'red' if category=='error' else 'blue' if category=='info' else 'green' if category=='success' else 'yellow' }}-100 border-l-4 border-{{ 'red' if category=='error' else 'blue' if category=='info' else 'green' if category=='success' else 'yellow' }}-500 text-{{ 'red' if category=='error' else 'blue' if category=='info' else 'green' if category=='success' else 'yellow' }}-700 p-4 mb-4 rounded">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
