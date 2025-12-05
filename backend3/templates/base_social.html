@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}ConnectED Social Network{% endblock %}</title>
+
+    <!-- Tailwind CDN (or replace with your own CSS) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Meta -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body class="bg-gray-100 text-gray-900">
+
+    <!-- Flash messages -->
+    <div class="max-w-4xl mx-auto mt-4 px-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="space-y-2">
+                {% for category, message in messages %}
+                <div class="px-4 py-3 rounded border
+                            {% if category == 'success' %}bg-green-50 border-green-300 text-green-800
+                            {% elif category == 'error' %}bg-red-50 border-red-300 text-red-800
+                            {% elif category == 'warning' %}bg-yellow-50 border-yellow-300 text-yellow-800
+                            {% else %}bg-blue-50 border-blue-300 text-blue-800
+                            {% endif %}">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- Page content from child templates -->
+    {% block content %}{% endblock %}
+
+</body>
+</html>

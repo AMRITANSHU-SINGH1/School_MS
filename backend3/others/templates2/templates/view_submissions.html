@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block title %}Assignment Submissions{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-4">{{ assignment.title }}</h2>
+
+<div class="bg-white shadow-lg rounded-lg p-6 mb-6">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <p class="text-gray-600"><strong>Class:</strong> {{ assignment.class_obj.name }}</p>
+            <p class="text-gray-600"><strong>Subject:</strong> {{ assignment.class_subject.subject.name }}</p>
+        </div>
+        <div>
+            <p class="text-gray-600"><strong>Due Date:</strong> {{ assignment.due_date }}</p>
+            <p class="text-gray-600"><strong>Total Marks:</strong> {{ assignment.total_marks }}</p>
+        </div>
+    </div>
+    <div class="mt-4">
+        <p class="text-gray-600"><strong>Description:</strong></p>
+        <p class="text-gray-800">{{ assignment.description }}</p>
+    </div>
+</div>
+
+<h4 class="text-2xl font-bold text-gray-800 mb-4">Submissions ({{ submissions|length }})</h4>
+<div class="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Submitted On</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Marks</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for sub in submissions %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ sub.student.name }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ sub.submission_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ 'green' if sub.status == 'Graded' else 'yellow' }}-100 text-{{ 'green' if sub.status == 'Graded' else 'yellow' }}-800">
+                        {{ sub.status }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {{ sub.marks_obtained if sub.marks_obtained else '--' }} / {{ assignment.total_marks }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">
+                    <a href="{{ url_for('grade_submission', submission_id=sub.id) }}" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg">
+                        {{ 'View/Edit' if sub.status == 'Graded' else 'Grade' }}
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if pending_students %}
+<h4 class="text-2xl font-bold text-gray-800 mb-4">Pending Students ({{ pending_students|length }})</h4>
+<div class="bg-white shadow-lg rounded-lg p-6">
+    <ul class="space-y-2">
+        {% for s in pending_students %}
+        <li class="text-gray-700">{{ s.name }} ({{ s.student_id }})</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endif %}
+{% endblock %}
+    

@@ -1,0 +1,68 @@
+{% extends "base_social.html" %}
+
+{% block title %}Alumni Management{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="font-bold text-3xl text-gray-900">Alumni Management</h1>
+            <a href="{{ url_for('add_alumni') }}" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                + Add Alumni
+            </a>
+        </div>
+
+        {% if alumni_list %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-100 border-b border-gray-200">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Name</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Email</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Alumni ID</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Graduation Year</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Current Position</th>
+                            <th class="px-6 py-3 text-left text-sm font-semibold text-gray-900">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for alumni in alumni_list %}
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4 text-sm text-gray-900 font-medium">{{ alumni.name }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ alumni.email }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ alumni.alumni_id }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ alumni.graduation_year }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-600">{{ alumni.current_position or '-' }}</td>
+                            <td class="px-6 py-4 text-sm space-x-3">
+                                <a href="{{ url_for('view_profile', user_type='alumni', user_id=alumni.alumni_id) }}" class="text-blue-600 hover:text-blue-700">
+                                    View
+                                </a>
+                                <button onclick="alert('Edit functionality can be implemented')" class="text-yellow-600 hover:text-yellow-700">
+                                    Edit
+                                </button>
+                                <form method="POST" style="display:inline;" onsubmit="return confirm('Delete this alumni?');">
+                                    <button type="submit" class="text-red-600 hover:text-red-700">
+                                        Delete
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <p class="text-gray-500 text-lg mb-4">No alumni registered yet.</p>
+            <a href="{{ url_for('add_alumni') }}" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Add First Alumni
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

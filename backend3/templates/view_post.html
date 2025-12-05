@@ -1,0 +1,121 @@
+{% extends "base_social.html" %}
+
+{% block title %}View Post{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-2xl mx-auto px-4 py-8">
+        <!-- Post -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-6">
+            <!-- Post Header -->
+            <div class="p-4 border-b border-gray-200 flex justify-between items-start">
+                <div class="flex items-center space-x-3 flex-1">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                        {{ post.author_info.name[0] }}
+                    </div>
+                    <div>
+                        <a href="{{ url_for('view_profile', user_type=post.author_type, user_id=post.author_id) }}" class="font-bold text-gray-900 hover:text-blue-600">
+                            {{ post.author_info.name }}
+                        </a>
+                        <p class="text-xs text-gray-600">{{ post.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                    </div>
+                </div>
+                {% if post.author_id == current_user.id and post.author_type == current_user.type %}
+                <div class="flex space-x-2">
+                    <a href="{{ url_for('edit_post', post_id=post.id) }}" class="text-gray-600 hover:text-blue-600 text-sm">Edit</a>
+                    <form method="POST" action="{{ url_for('delete_post', post_id=post.id) }}" style="display:inline;" onsubmit="return confirm('Delete this post?');">
+                        <button type="submit" class="text-gray-600 hover:text-red-600 text-sm">Delete</button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Post Content -->
+            <div class="p-4">
+                <p class="text-gray-800 text-lg leading-relaxed">{{ post.content }}</p>
+                {% if post.image_path %}
+                <img src="{{ post.image_path }}" alt="Post image" class="w-full rounded-lg mt-4 max-h-96 object-cover">
+                {% endif %}
+            </div>
+
+            <!-- Post Stats -->
+            <div class="px-4 py-3 bg-gray-50 border-t text-sm text-gray-600 flex justify-between">
+                <span>👍 {{ post.likes_count }} likes</span>
+                <span>💬 {{ post.comments_count }} comments</span>
+            </div>
+
+            <!-- Post Actions -->
+            <div class="px-4 py-3 border-t flex space-x-4">
+                <form method="POST" action="{{ url_for('like_post', post_id=post.id) }}" style="display:inline; width: 100%;">
+                    <button type="submit" class="flex-1 text-center py-2 text-gray-600 hover:bg-gray-50 rounded transition {% if post.has_liked %}text-blue-600 font-bold{% endif %}">
+                        👍 {% if post.has_liked %}Unlike{% else %}Like{% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Comments Section -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="font-bold text-lg text-gray-900 mb-4">Comments ({{ post.comments_count }})</h3>
+                
+                <!-- Add Comment Form -->
+                <form method="POST" action="{{ url_for('comment_post', post_id=post.id) }}" class="mb-6">
+                    <div class="flex space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                            {{ current_user.name[0] }}
+                        </div>
+                        <div class="flex-1">
+                            <textarea name="content" rows="2" required placeholder="Write a comment..."
+                                      class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"></textarea>
+                            <div class="mt-2 flex justify-end">
+                                <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                                    Comment
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Comments List -->
+            {% if comments %}
+            <div class="divide-y">
+                {% for comment in comments %}
+                <div class="p-4">
+                    <div class="flex space-x-3">
+                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                            {{ comment.author_info.name[0] }}
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <a href="{{ url_for('view_profile', user_type=comment.author_type, user_id=comment.author_id) }}" 
+                                       class="font-semibold text-gray-900 hover:text-blue-600">
+                                        {{ comment.author_info.name }}
+                                    </a>
+                                    <p class="text-xs text-gray-600">{{ comment.created_at.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                                </div>
+                                {% if comment.author_id == current_user.id and comment.author_type == current_user.type %}
+                                <form method="POST" action="{{ url_for('delete_comment', comment_id=comment.id) }}" style="display:inline;" onsubmit="return confirm('Delete this comment?');">
+                                    <button type="submit" class="text-gray-600 hover:text-red-600 text-sm">Delete</button>
+                                </form>
+                                {% endif %}
+                            </div>
+                            <p class="text-gray-700 mt-2">{{ comment.content }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="p-8 text-center">
+                <p class="text-gray-500">No comments yet. Be the first to comment!</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

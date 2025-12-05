@@ -1,0 +1,124 @@
+{% extends "base_social.html" %}
+
+{% block title %}My Connections{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- Pending Requests -->
+        {% if pending_requests %}
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                📨 Connection Requests ({{ pending_requests | length }})
+            </h2>
+            <div class="space-y-4">
+                {% for item in pending_requests %}
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition">
+                    <div class="flex items-center space-x-4 flex-1">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                            {{ item.user.name[0] }}
+                        </div>
+                        <div>
+                            <a href="{{ url_for('view_profile', user_type=item.type, user_id=item.user.id) }}" 
+                               class="font-semibold text-gray-900 hover:text-blue-600">
+                                {{ item.user.name }}
+                            </a>
+                            <p class="text-sm text-gray-600">{{ item.profile.headline or 'Professional' }}</p>
+                            {% if item.request.message %}
+                            <p class="text-sm text-gray-500 mt-1 italic">{{ item.request.message }}</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <form method="POST" action="{{ url_for('accept_connection', connection_id=item.request.id) }}" style="display:inline;">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                                Accept
+                            </button>
+                        </form>
+                        <form method="POST" action="{{ url_for('reject_connection', connection_id=item.request.id) }}" style="display:inline;">
+                            <button type="submit" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Reject
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- My Connections -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                🤝 My Connections ({{ connections | length }})
+            </h2>
+            {% if connections %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for conn in connections %}
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition group">
+                    <div class="flex items-center space-x-4 flex-1">
+                        <a href="{{ url_for('view_profile', user_type=conn.type, user_id=conn.user.id) }}">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold group-hover:shadow-lg transition">
+                                {{ conn.user.name[0] }}
+                            </div>
+                        </a>
+                        <div>
+                            <a href="{{ url_for('view_profile', user_type=conn.type, user_id=conn.user.id) }}" 
+                               class="font-semibold text-gray-900 hover:text-blue-600">
+                                {{ conn.user.name }}
+                            </a>
+                            <p class="text-sm text-gray-600">{{ conn.profile.headline or 'Professional' }}</p>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <form method="POST" action="{{ url_for('remove_connection', connection_id=conn.connection_id) }}" style="display:inline;" onsubmit="return confirm('Remove this connection?');">
+                            <button type="submit" class="text-gray-600 hover:text-red-600 px-3 py-1 opacity-0 group-hover:opacity-100 transition">
+                                Remove
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-8">No connections yet. Start connecting with others!</p>
+            {% endif %}
+        </div>
+
+        <!-- Sent Requests -->
+        {% if sent_requests %}
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                ⏳ Pending Sent ({{ sent_requests | length }})
+            </h2>
+            <div class="space-y-4">
+                {% for req in sent_requests %}
+                <div class="flex items-center justify-between p-4 border border-yellow-200 bg-yellow-50 rounded-lg">
+                    <div class="flex items-center space-x-4 flex-1">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                            {{ req.user.name[0] }}
+                        </div>
+                        <div>
+                            <a href="{{ url_for('view_profile', user_type=req.type, user_id=req.user.id) }}" 
+                               class="font-semibold text-gray-900 hover:text-blue-600">
+                                {{ req.user.name }}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <form method="POST" action="{{ url_for('cancel_connection_request', connection_id=req.request.id) }}" style="display:inline;">
+                            <button type="submit" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
