@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Resources</title>
+  <title>Faculty - My Classes</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
@@ -83,14 +83,17 @@
         <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
             Dashboard
         </li>
+        <!-- Active State for My Classes Page -->
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors bg-mid-blue text-accent">
+            My Classes
+        </li>
         <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
             Attendance
         </li>
         <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
             Assignments
         </li>
-        <!-- Active State for Resources/Notes Page -->
-        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors bg-mid-blue text-accent">
+        <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
             Resources
         </li>
         <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
@@ -111,15 +114,20 @@
     <header class="p-4 flex justify-between items-center border-b-2 border-gray-200 bg-white shadow-md sticky top-0 z-10">
       <!-- Left side: Hamburger + Name -->
       <div class="flex items-center">
-        <button onclick="toggleSidebar()" class="text-3xl text-mid-blue mr-4 ">☰</button>
+        <!-- Replaced unicode with SVG and removed lg:hidden so it's always visible -->
+        <button onclick="toggleSidebar()" class="mr-4 text-accent hover:text-mid-blue transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+        </button>
         <div class="text-xl font-body font-bold">
           Dr. Priya <span class="font-normal text-gray-600">| Faculty of Mathematics</span>
         </div>
       </div>
       
-      <!-- Right side: CS020 + Icon + Bell -->
-      <div class="flex items-center space-x-4">
-        <!-- HOVER INTERACTION ADDED HERE -->
+      <!-- Right side: Icon + Bell -->
+      <div class="flex items-center space-x-6">
+        <!-- HOVER INTERACTION -->
         <div class="relative group cursor-pointer z-50">
             <!-- Profile Icon -->
             <div class="w-10 h-10 rounded-full bg-accent text-white flex items-center justify-center font-bold shadow-md border-2 border-transparent group-hover:border-mid-blue transition-all">P</div>
@@ -127,12 +135,9 @@
             <!-- Tooltip / Hover Card -->
             <div class="absolute right-0 mt-3 w-72 bg-white rounded-xl shadow-2xl p-6 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right scale-95 group-hover:scale-100 border border-gray-100 z-50">
                 
-                <!-- Decorative Arrow pointing up -->
                 <div class="absolute -top-2 right-4 w-4 h-4 bg-white transform rotate-45 border-l border-t border-gray-100"></div>
 
-                <!-- Card Content -->
                 <div class="flex flex-col items-center text-center">
-                    <!-- Larger Avatar in Card -->
                     <div class="w-20 h-20 rounded-full bg-accent/10 text-accent flex items-center justify-center font-serif text-3xl font-bold mb-4 shadow-inner">
                         P
                     </div>
@@ -162,74 +167,93 @@
       </div>
     </header>
 
-    <!-- UPLOAD NOTES SECTION -->
+    <!-- MAIN CONTENT: MY CLASSES -->
     <main class="flex-1 p-8 bg-dark-blue">
-        <!-- White Card Container -->
-        <div class="bg-white p-8 rounded-lg shadow-2xl min-h-[500px]">
-            <h2 class="text-2xl font-serif font-bold mb-8 text-mid-blue border-b border-gray-200 pb-4 flex items-center">
-                <!-- Link/Notes Icon -->
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8 mr-3 text-accent">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
-                </svg>
-                Upload Notes & Resources
-            </h2>
-            
-            <div class="max-w-4xl mx-auto mt-10">
-                <!-- Upload Form -->
-                <div class="space-y-6">
-                    <div class="bg-gray-50 p-6 rounded-lg border border-gray-100">
-                        <h3 class="text-lg font-bold text-dark-blue mb-4">Add New Link</h3>
-                        
-                        <!-- Topic Title -->
-                        <div class="mb-4">
-                            <label for="noteTitle" class="block text-sm font-semibold text-gray-700 mb-2">Topic / Title</label>
-                            <input 
-                                type="text" 
-                                id="noteTitle" 
-                                class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none text-dark-blue bg-white"
-                                placeholder="e.g., Chapter 3: Quadratic Functions"
-                            >
-                        </div>
-
-                        <!-- Link URL -->
-                        <div class="mb-6">
-                            <label for="noteLink" class="block text-sm font-semibold text-gray-700 mb-2">Resource Link (URL)</label>
-                            <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                                    </svg>
-                                </div>
-                                <input 
-                                    type="url" 
-                                    id="noteLink" 
-                                    class="w-full pl-10 p-3 border border-gray-300 rounded focus:ring-2 focus:ring-accent focus:border-accent outline-none text-dark-blue bg-white"
-                                    placeholder="https://drive.google.com/..."
-                                >
-                            </div>
-                            <p class="text-xs text-gray-500 mt-1">Paste links to Google Drive, YouTube, or external websites.</p>
-                        </div>
-
-                        <!-- Action Button -->
-                        <div class="flex justify-end">
-                            <button onclick="addResource()" class="bg-mid-blue text-white px-6 py-2 rounded-lg font-semibold hover:bg-accent transition-colors shadow-md flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 mr-2">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                </svg>
-                                Add Resource
-                            </button>
-                        </div>
-                    </div>
+        
+        <div class="max-w-5xl mx-auto">
+             <!-- White Card Container -->
+             <div class="bg-white p-8 rounded-lg shadow-2xl min-h-[500px]">
+                <h2 class="text-2xl font-serif font-bold mb-6 text-mid-blue border-b border-gray-200 pb-4">My Classes & Subjects</h2>
+                
+                <div class="overflow-x-auto rounded-lg border border-gray-200">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Class</th>
+                                <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-gray-500 uppercase tracking-wider">Subject</th>
+                                <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-gray-500 uppercase tracking-wider">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <!-- Example Data Row 1 -->
+                            <tr class="hover:bg-gray-50 transition-colors group">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-dark-blue flex items-center">
+                                    <div class="w-8 h-8 rounded bg-blue-100 text-mid-blue flex items-center justify-center mr-3 text-xs font-bold group-hover:bg-mid-blue group-hover:text-white transition-colors">3A</div>
+                                    Class 3 - A
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Mathematics</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <button class="text-mid-blue hover:text-accent font-semibold text-sm flex items-center justify-center w-full">
+                                        View
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 ml-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Example Data Row 2 -->
+                            <tr class="hover:bg-gray-50 transition-colors group">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-dark-blue flex items-center">
+                                    <div class="w-8 h-8 rounded bg-green-100 text-green-700 flex items-center justify-center mr-3 text-xs font-bold group-hover:bg-green-600 group-hover:text-white transition-colors">1A</div>
+                                    Class 1 - A
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Mathematics</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <button class="text-mid-blue hover:text-accent font-semibold text-sm flex items-center justify-center w-full">
+                                        View
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 ml-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                            <!-- Example Data Row 3 -->
+                            <tr class="hover:bg-gray-50 transition-colors group">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-dark-blue flex items-center">
+                                    <div class="w-8 h-8 rounded bg-purple-100 text-purple-700 flex items-center justify-center mr-3 text-xs font-bold group-hover:bg-purple-600 group-hover:text-white transition-colors">5B</div>
+                                    Class 5 - B
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">Algebra</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <button class="text-mid-blue hover:text-accent font-semibold text-sm flex items-center justify-center w-full">
+                                        View
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4 ml-1">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-            </div>
+             </div>
         </div>
+
     </main>
-    <footer class="bg-dark-blue text-white pt-0 pb-6 mt-0 mb-0  ">
+    <footer class="bg-dark-blue text-white pt-0 pb-6 mt-0 mb-0  ">
     
     <!-- WRAPPER DIV WITH CLIP-PATH CLASS APPLIED -->
     <div class="footer-slant bg-dark-blue pt-16 pb-10" style="background-color: #1F3B63;">
         
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            
+            <!-- DISCLAIMER SECTION - Prominent Red Text -->
+            <div class="mb-0 p-4 border border-danger bg-mid-blue/30 rounded-lg">
+                <p class="text-danger font-semibold text-sm leading-relaxed text-center">
+                    <span class="text-white font-bold">DISCLAIMER:</span> The Data Shown on the Parents/Students Portal may not represent the Real Time Data, but is shown for the Immediate Reference to Parents/Students. For Confirmation and Clarification, please contact the respective Departments.
+                </p>
+            </div>
+            <!-- END DISCLAIMER -->
 
             <!-- LOGO, LINKS, AND SOCIAL ICONS -->
             <div class="flex flex-col md:flex-row md:justify-between items-center space-y-6 md:space-y-0 mt-4">
@@ -289,6 +313,9 @@
         </div>
     </div>
 </footer>
+    
+    
+    
   </div>
 
   <script>
@@ -301,38 +328,6 @@
         sidebar.classList.remove('w-0');
         sidebar.classList.add('w-64');
       }
-    }
-
-    function addResource() {
-        const title = document.getElementById('noteTitle').value;
-        const link = document.getElementById('noteLink').value;
-        
-        if(title.trim() === "" || link.trim() === "") {
-            alert("Please provide both a Title and a Link.");
-            return;
-        }
-        
-        // Simulating Adding
-        const btn = document.querySelector('button[onclick="addResource()"]');
-        const originalContent = btn.innerHTML;
-        
-        btn.innerHTML = 'Adding...';
-        btn.disabled = true;
-        btn.classList.add('opacity-75');
-
-        setTimeout(() => {
-            // Reset Button
-            btn.innerHTML = originalContent;
-            btn.disabled = false;
-            btn.classList.remove('opacity-75');
-            
-            // Clear Inputs
-            document.getElementById('noteTitle').value = "";
-            document.getElementById('noteLink').value = "";
-            
-            alert("Resource link added successfully!");
-            
-        }, 800);
     }
   </script>
 
