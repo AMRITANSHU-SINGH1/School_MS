@@ -90,7 +90,7 @@
             Assignments
         </li>
         <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
-            Resources
+            My Classes
         </li>
         <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
             Digital Diary
@@ -99,7 +99,7 @@
             Grades
         </li>
         <li class="p-2 rounded hover:bg-mid-blue/70 cursor-pointer transition-colors">
-            Announcements
+            Notifications
         </li>
       </ul>
     </nav>
@@ -166,106 +166,145 @@
       </div>
     </header>
 
-    <!-- TIMETABLE SECTION -->
+    <!-- NEW DASHBOARD CONTENT -->
     <main class="flex-1 p-8 bg-dark-blue">
+        
+        <!-- Welcome Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-serif font-bold text-white mb-1">Welcome, Dr. Priya!</h1>
+            <p class="text-gray-300">Your teaching overview</p>
+        </div>
 
-        <!-- Control Bar: Class Selection & Subject Tab -->
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 bg-white p-4 rounded-lg shadow-lg border-l-4 border-accent">
-             <!-- Class Selector with Dropdown Symbol -->
-             <div class="relative group">
-                <select class="appearance-none bg-mid-blue text-white pl-5 pr-12 py-3 rounded-lg font-semibold cursor-pointer hover:bg-dark-blue transition-colors focus:outline-none focus:ring-2 focus:ring-accent shadow-md">
-                    <option disabled selected>Select Class - Class 6</option>
-                    <option>Class 6</option>
-                    <option>Class 7</option>
-                    <option>Class 8</option>
-                    <option>Class 9</option>
-                    <option>Class 10</option>
-                </select>
-                <!-- Custom Arrow Icon -->
-                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+        <!-- 1. Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+            <!-- Classes -->
+            <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-mid-blue flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-gray-500 mb-1">Classes</p>
+                    <h3 class="text-3xl font-bold text-dark-blue">2</h3>
+                </div>
+                <div class="p-3 bg-blue-50 rounded-lg text-mid-blue">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5M9 11.25v1.5M12 9v3.75m3-6v6" />
                     </svg>
                 </div>
-             </div>
+            </div>
 
-             <!-- Subject Tab (Read-only Display) -->
-             <div class="mt-4 md:mt-0 flex items-center bg-gray-50 px-8 py-3 rounded-lg border border-gray-200 shadow-sm">
-                <span class="text-gray-500 font-semibold mr-3 uppercase text-xs tracking-wider">Subject</span>
-                <span class="text-dark-blue font-bold text-xl ">Mathematics</span>
-             </div>
+            <!-- Students -->
+            <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-green-600 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-gray-500 mb-1">Students</p>
+                    <h3 class="text-3xl font-bold text-dark-blue">3</h3>
+                </div>
+                <div class="p-3 bg-green-50 rounded-lg text-green-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.499 5.84c-.866.294-1.748.575-2.658.813m-15.482 0a50.57 50.57 0 00-2.658-.813m15.482 0a50.57 50.57 0 00-2.658-.813" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Subjects -->
+            <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-accent flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-gray-500 mb-1">Subjects</p>
+                    <h3 class="text-3xl font-bold text-dark-blue">2</h3>
+                </div>
+                <div class="p-3 bg-orange-50 rounded-lg text-accent">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Pending Submissions -->
+            <div class="bg-white p-6 rounded-lg shadow-lg border-l-4 border-purple-600 flex items-center justify-between">
+                <div>
+                    <p class="text-sm font-semibold text-gray-500 mb-1">Pending Submissions</p>
+                    <h3 class="text-3xl font-bold text-dark-blue">0</h3>
+                </div>
+                <div class="p-3 bg-purple-50 rounded-lg text-purple-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.091-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m0 0a6 6 0 01-5.8 0" />
+                    </svg>
+                </div>
+            </div>
         </div>
 
-        <!-- White Card Container -->
-        <div class="bg-white p-8 rounded-lg shadow-2xl overflow-x-auto min-h-[500px]">
-            <h2 class="text-2xl font-serif font-bold mb-8 text-mid-blue border-b border-gray-200 pb-4">Weekly Schedule</h2>
+        <!-- 2. My Classes & Subjects -->
+        <div class="bg-mid-blue/20 p-6 rounded-xl border border-white/10 mb-10">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-white">My Classes & Subjects</h2>
+                <a href="#" class="text-accent hover:text-white transition-colors text-sm font-semibold">View All</a>
+            </div>
             
-            <!-- Time Headers -->
-            <div class="grid grid-cols-6 gap-4 text-center text-sm font-semibold text-gray-600 mb-6 min-w-[700px]">
-                <div class="col-span-1"></div> 
-                <div class="col-span-1">8:00-10:00</div>
-                <div class="col-span-1">10:00-11:00</div>
-                <div class="col-span-1">11:30-1:00</div>
-                <div class="col-span-1">2:00-3:00</div>
-                <div class="col-span-1">3:00-4:00</div>
-            </div>
-
-            <!-- Schedule Grid -->
-            <div class="grid grid-cols-6 gap-y-6 gap-x-4 text-dark-blue font-body min-w-[700px]">
-                
-                <!-- Monday -->
-                <div class="col-span-1 font-bold pt-2 text-dark-blue">Mon</div>
-                <div class="col-span-5 flex space-x-4">
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 6</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 9</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 10</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue"></div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 7</div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Class Card 1 -->
+                <div class="bg-dark-blue p-6 rounded-lg border border-gray-700 hover:border-mid-blue transition-colors">
+                    <h3 class="text-xl font-bold text-white mb-1">CLASS 3-A</h3>
+                    <p class="text-gray-400 text-sm mb-6 font-semibold tracking-wider">MATHS</p>
+                    <div class="flex space-x-3">
+                        <button class="px-4 py-2 bg-mid-blue hover:bg-mid-blue/80 text-white rounded text-sm font-medium transition-colors">Attendance</button>
+                        <button class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded text-sm font-medium transition-colors">Marks</button>
+                    </div>
                 </div>
 
-                <!-- Tuesday -->
-                <div class="col-span-1 font-bold pt-2 text-dark-blue">Tue</div>
-                <div class="col-span-5 flex space-x-4">
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 10</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue"></div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 9</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 6</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 7</div>
-                </div>
-                
-                <!-- Wednesday -->
-                <div class="col-span-1 font-bold pt-2 text-dark-blue">Wed</div>
-                <div class="col-span-5 flex space-x-4">
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 7</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 6</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 10</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue"></div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 9</div>
-                </div>
-
-                <!-- Thursday -->
-                <div class="col-span-1 font-bold pt-2 text-dark-blue">Thu</div>
-                <div class="col-span-5 flex space-x-4">
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 9</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue"></div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 6</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">TRAINING</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 10</div>
-                </div>
-
-                <!-- Friday -->
-                <div class="col-span-1 font-bold pt-2 text-dark-blue">Fri</div>
-                <div class="col-span-5 flex space-x-4">
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 9</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 10</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">MEETING</div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue"></div>
-                    <div class="w-1/5 h-12 border border-accent rounded flex items-center justify-center text-sm font-medium bg-white text-dark-blue">Class 6</div>
+                <!-- Class Card 2 -->
+                <div class="bg-dark-blue p-6 rounded-lg border border-gray-700 hover:border-mid-blue transition-colors">
+                    <h3 class="text-xl font-bold text-white mb-1">CLASS 1-A</h3>
+                    <p class="text-gray-400 text-sm mb-6 font-semibold tracking-wider">MATHS</p>
+                    <div class="flex space-x-3">
+                        <button class="px-4 py-2 bg-mid-blue hover:bg-mid-blue/80 text-white rounded text-sm font-medium transition-colors">Attendance</button>
+                        <button class="px-4 py-2 bg-green-700 hover:bg-green-600 text-white rounded text-sm font-medium transition-colors">Marks</button>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- 3. Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Mark Attendance -->
+            <button class="group bg-dark-blue p-8 rounded-xl border border-gray-700 hover:border-accent transition-all flex flex-col items-center justify-center text-center h-48">
+                <div class="w-14 h-14 rounded-full bg-blue-600 text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <span class="text-white font-semibold">Mark Attendance</span>
+            </button>
+
+            <!-- Add Marks -->
+            <button class="group bg-dark-blue p-8 rounded-xl border border-gray-700 hover:border-accent transition-all flex flex-col items-center justify-center text-center h-48">
+                <div class="w-14 h-14 rounded-full bg-green-600 text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
+                    </svg>
+                </div>
+                <span class="text-white font-semibold">Add Marks</span>
+            </button>
+
+            <!-- Create Assignment -->
+            <button class="group bg-dark-blue p-8 rounded-xl border border-gray-700 hover:border-accent transition-all flex flex-col items-center justify-center text-center h-48">
+                <div class="w-14 h-14 rounded-full bg-accent text-dark-blue flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 6.75h12M8.25 12h12m-12 5.25h12M3.75 6.75h.007v.008H3.75V6.75zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zM3.75 12h.007v.008H3.75V12zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm-.375 5.25h.007v.008H3.75v-.008zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                </div>
+                <span class="text-white font-semibold">Create Assignment</span>
+            </button>
+
+            <!-- Add Diary Entry -->
+            <button class="group bg-dark-blue p-8 rounded-xl border border-gray-700 hover:border-accent transition-all flex flex-col items-center justify-center text-center h-48">
+                <div class="w-14 h-14 rounded-full bg-purple-600 text-white flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
+                    </svg>
+                </div>
+                <span class="text-white font-semibold">Add Diary Entry</span>
+            </button>
+        </div>
+
     </main>
-    <footer class="bg-dark-blue text-white pt-0 pb-6 mt-0 mb-0  ">
+    <footer class="bg-dark-blue text-white pt-0 pb-6 mt-0 mb-0  ">
     
     <!-- WRAPPER DIV WITH CLIP-PATH CLASS APPLIED -->
     <div class="footer-slant bg-dark-blue pt-16 pb-10" style="background-color: #1F3B63;">
@@ -278,7 +317,7 @@
                     <span class="text-white font-bold">DISCLAIMER:</span> The Data Shown on the Parents/Students Portal may not represent the Real Time Data, but is shown for the Immediate Reference to Parents/Students. For Confirmation and Clarification, please contact the respective Departments.
                 </p>
             </div>
-            <!-- END DISCLAIMER
+            <!-- END DISCLAIMER -->
 
             <!-- LOGO, LINKS, AND SOCIAL ICONS -->
             <div class="flex flex-col md:flex-row md:justify-between items-center space-y-6 md:space-y-0 mt-4">
