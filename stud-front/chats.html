@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>School Student & Alumni Messaging UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tailwind CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            dark: "#0A1A2F",
+            blue: "#1F3B63",
+            gold: "#D4A056",
+            white: "#FFFFFF",
+          },
+          fontFamily: {
+            sans: ["Open Sans", "sans-serif"],
+            heading: ["Merriweather", "serif"],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: "Open Sans", sans-serif; }
+    .heading { font-family: "Merriweather", serif; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-dark flex items-center justify-center p-4">
+
+  <div class="w-full max-w-6xl h-[680px] rounded-[32px] border border-white/10 bg-dark/70 backdrop-blur-2xl overflow-hidden text-white flex shadow-2xl">
+
+    <!-- Sidebar -->
+    <aside class="w-72 border-r border-white/10 bg-dark/40 flex flex-col">
+
+      <div class="px-5 pt-4 pb-3 flex items-center gap-3">
+        <div class="w-10 h-10 rounded-full bg-gold text-dark flex items-center justify-center font-bold">
+          ST
+        </div>
+        <div class="flex-1">
+          <div class="text-sm font-semibold heading">Student User</div>
+          <div class="text-xs text-gold flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-gold"></span>
+            Online
+          </div>
+        </div>
+      </div>
+
+      <!-- Search -->
+      <div class="px-4 pb-2">
+        <input
+          id="searchInput"
+          type="text"
+          placeholder="Search seniors/alumni..."
+          class="w-full px-3 py-2 rounded-xl bg-dark/60 border border-white/10 text-white text-xs outline-none"
+        />
+      </div>
+
+      <div id="chatList" class="flex-1 overflow-y-auto px-2 pb-3 space-y-1 text-sm">
+      </div>
+    </aside>
+
+    <!-- Chat Area -->
+    <main class="flex-1 flex flex-col bg-blue/40">
+
+      <!-- Header -->
+      <header class="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-blue/60">
+        <div class="flex items-center gap-3">
+          <div id="chatAvatar" class="w-9 h-9 rounded-full bg-gold text-dark flex items-center justify-center font-semibold">
+            AL
+          </div>
+          <div>
+            <div id="chatName" class="text-sm font-semibold heading">Rahul Sharma</div>
+            <div id="chatPhone" class="text-[11px] text-gold">Alumni • Passed Out 2020</div>
+          </div>
+        </div>
+      </header>
+
+      <section id="messagesContainer" class="flex-1 overflow-y-auto px-6 py-4 space-y-3 text-sm">
+      </section>
+
+      <div id="typingIndicator" class="px-6 pb-2 hidden">
+        <div class="inline-flex items-center gap-2 rounded-xl bg-dark/40 px-3 py-1.5 text-xs text-gold">
+          <span class="animate-pulse">●</span> typing...
+        </div>
+      </div>
+
+      <form id="messageForm" class="border-t border-white/10 px-4 py-3 flex items-center gap-2 bg-dark/60">
+        <div class="flex-1">
+          <input
+            id="messageInput"
+            type="text"
+            placeholder="Type a message..."
+            class="w-full px-4 py-2 bg-dark/40 border border-white/10 rounded-full text-white placeholder:text-white/40 outline-none"
+          />
+        </div>
+        <button
+          type="submit"
+          class="px-4 py-2 rounded-full bg-gold text-dark font-semibold hover:bg-gold/80 transition">
+          Send
+        </button>
+      </form>
+
+    </main>
+  </div>
+
+  <!-- JS Logic -->
+  <script>
+    const conversations = [
+      {
+        id: "rahul",
+        name: "Rahul Sharma",
+        initials: "RS",
+        phone: "Alumni • Passed Out 2020",
+        preview: "I can guide you for Science stream.",
+        lastMessageTime: "21:18",
+        messages: [
+          { sender: "them", text: "Hey! I heard you're confused about choosing your stream?", time: "Yesterday • 19:42" },
+          { sender: "me", text: "Yes, I'm in Class 10 and not sure between Science and Commerce.", time: "Yesterday • 19:45" },
+          { sender: "them", text: "No worries! What are your interests?", time: "Today • 21:18" },
+          { sender: "me", text: "I like computers and maths.", time: "Today • 21:19" },
+        ],
+      },
+
+      {
+        id: "priya",
+        name: "Aisha Khan",
+        initials: "AK",
+        phone: "Senior • Class 12",
+        preview: "Focus on basics for boards.",
+        lastMessageTime: "17:12",
+        messages: [
+          { sender: "them", text: "Focus on basics for boards. Solve previous year papers.", time: "Today • 17:12" },
+          { sender: "me", text: "Okay didi! How many hours should I study daily?", time: "Today • 17:14" },
+        ],
+      },
+
+      {
+        id: "arjun",
+        name: "Rohan Verma",
+        initials: "RV",
+        phone: "Alumni • Now in IIT Delhi",
+        preview: "Happy to help with JEE prep!",
+        lastMessageTime: "15:22",
+        messages: [
+          { sender: "them", text: "If you need help with JEE basics, feel free to ask!", time: "Today • 15:22" }
+        ],
+      }
+    ];
+
+    let activeConversationId = "rahul";
+
+    const chatListEl = document.getElementById("chatList");
+    const messagesEl = document.getElementById("messagesContainer");
+    const chatNameEl = document.getElementById("chatName");
+    const chatPhoneEl = document.getElementById("chatPhone");
+    const chatAvatarEl = document.getElementById("chatAvatar");
+    const messageForm = document.getElementById("messageForm");
+    const messageInput = document.getElementById("messageInput");
+    const typingIndicator = document.getElementById("typingIndicator");
+    const searchInput = document.getElementById("searchInput");
+
+    function renderChatList(filter = "") {
+      chatListEl.innerHTML = "";
+      const q = filter.toLowerCase();
+
+      conversations
+        .filter(c => c.name.toLowerCase().includes(q) || c.preview.toLowerCase().includes(q))
+        .forEach(c => {
+          const isActive = c.id === activeConversationId;
+
+          const el = document.createElement("div");
+          el.className =
+            "p-3 rounded-xl cursor-pointer transition " +
+            (isActive ? "bg-gold/30" : "bg-dark/40 hover:bg-dark/20");
+
+          el.innerHTML = `
+            <div class="font-semibold heading">${c.name}</div>
+            <div class="text-xs text-gold">${c.preview}</div>
+          `;
+
+          el.onclick = () => {
+            activeConversationId = c.id;
+            renderHeader();
+            renderMessages();
+            renderChatList(searchInput.value);
+          };
+
+          chatListEl.appendChild(el);
+        });
+    }
+
+    function renderHeader() {
+      const conv = conversations.find(c => c.id === activeConversationId);
+      chatNameEl.textContent = conv.name;
+      chatPhoneEl.textContent = conv.phone;
+      chatAvatarEl.textContent = conv.initials;
+    }
+
+    function renderMessages() {
+      const conv = conversations.find(c => c.id === activeConversationId);
+      messagesEl.innerHTML = "";
+
+      conv.messages.forEach(msg => {
+        const isMe = msg.sender === "me";
+        const bubble = document.createElement("div");
+
+        bubble.className =
+          "max-w-[70%] px-4 py-2 rounded-xl shadow text-sm " +
+          (isMe
+            ? "bg-gold text-dark ml-auto"
+            : "bg-blue/60 text-white mr-auto");
+
+        bubble.innerHTML =
+          `<div>${msg.text}</div>
+           <div class="text-[10px] text-white/60 mt-1">${msg.time}</div>`;
+
+        messagesEl.appendChild(bubble);
+      });
+
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function fakeReply() {
+      typingIndicator.classList.remove("hidden");
+
+      setTimeout(() => {
+        typingIndicator.classList.add("hidden");
+
+        const conv = conversations.find(c => c.id === activeConversationId);
+        conv.messages.push({
+          sender: "them",
+          text: "Sure! Happy to help.",
+          time: "Today • " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        });
+
+        renderMessages();
+      }, 900);
+    }
+
+    messageForm.addEventListener("submit", e => {
+      e.preventDefault();
+      const text = messageInput.value.trim();
+      if (!text) return;
+
+      const conv = conversations.find(c => c.id === activeConversationId);
+      conv.messages.push({
+        sender: "me",
+        text,
+        time: "Today • " + new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      });
+
+      conv.preview = text;
+
+      messageInput.value = "";
+      renderMessages();
+      renderChatList(searchInput.value);
+
+      fakeReply();
+    });
+
+    searchInput.addEventListener("input", e => {
+      renderChatList(e.target.value);
+    });
+
+    renderChatList();
+    renderHeader();
+    renderMessages();
+  </script>
+
+</body>
+</html>
