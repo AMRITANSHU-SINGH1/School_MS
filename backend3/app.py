@@ -308,7 +308,8 @@ class Alumni(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     alumni_id = db.Column(db.String(20), unique=True)
     name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(120), unique=True, nullable=False)
+    email = db.Column(db.String(120), unique=True, nullable=True)
+    stu_id=db.Column(db.String(20),unique=True,nullable=False)   #adding the student_id as 
     password_hash = db.Column(db.String(128), nullable=False)
     
     # Alumni specific info
@@ -541,21 +542,27 @@ def social_login_required(f):
 def alumni_register():
     if request.method == 'POST':
         name = request.form['name']
-        email = request.form['email']
+        # email = request.form['email']
+        stu_id=request.form['stu_id']
         password = request.form['password']
         graduation_year = int(request.form['graduation_year'])
         degree = request.form.get('degree', '')
         major = request.form.get('major', '')
         phone = request.form.get('phone', '')
         
-        existing = Alumni.query.filter_by(email=email).first()
+        existing = Alumni.query.filter_by(stu_id=stu_id).first()
+        student=Student.query.filter_by(student_id=stu_id).first()
         if existing:
-            flash('Email already registered', 'error')
+            flash('Alumni already registered', 'error')
+            return redirect(url_for('alumni_register'))
+        elif not student:
+            # Case: The ID does NOT exist in the Student table (Invalid ID)
+            flash('Invalid Student ID. Please check your records.', 'error')
             return redirect(url_for('alumni_register'))
         
         new_alumni = Alumni(
             name=name,
-            email=email,
+            stu_id=stu_id,
             graduation_year=graduation_year,
             degree=degree,
             major=major,
@@ -580,10 +587,11 @@ def alumni_register():
 @app.route('/alumni/login', methods=['GET', 'POST'])
 def alumni_login():
     if request.method == 'POST':
-        email = request.form['email']
+        # email = request.form['email']
+        stu_id=request.form['stu_id']
         password = request.form['password']
         
-        alumni = Alumni.query.filter_by(email=email).first()
+        alumni = Alumni.query.filter_by(stu_id=stu_id).first()
         
         if alumni and alumni.check_password(password):
             session['alumni_id'] = alumni.alumni_id
@@ -591,7 +599,7 @@ def alumni_login():
             flash('Login successful!', 'success')
             return redirect(url_for('social_dashboard'))
         else:
-            flash('Invalid email or password', 'error')
+            flash('Invalid  or id or password', 'error')
     
     return render_template('alumni_login.html')
 
