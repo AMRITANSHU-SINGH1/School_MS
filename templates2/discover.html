@@ -1,0 +1,81 @@
+{% extends "base_social.html" %}
+
+{% block title %}Discover People{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="font-bold text-3xl text-gray-900">Discover People</h1>
+            <p class="text-gray-600 mt-2">Find people with similar interests and skills</p>
+        </div>
+
+        {% if suggestions %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for suggestion in suggestions %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition flex flex-col">
+                <div class="p-6 flex-1">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+                            {{ suggestion.user.name[0] }}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900">{{ suggestion.user.name }}</h3>
+                            <p class="text-sm text-gray-600">{{ suggestion.type | title }}</p>
+                        </div>
+                    </div>
+
+                    {% if suggestion.profile.headline %}
+                    <p class="font-medium text-gray-800 mb-3">{{ suggestion.profile.headline }}</p>
+                    {% endif %}
+
+                    {% if suggestion.common_skills %}
+                    <div class="mb-4">
+                        <p class="text-xs font-medium text-gray-600 mb-2">Common Skills</p>
+                        <div class="flex flex-wrap gap-2">
+                            {% for skill in suggestion.common_skills %}
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if suggestion.profile.skills %}
+                    <div class="mb-4">
+                        <p class="text-xs font-medium text-gray-600 mb-2">Skills</p>
+                        <div class="flex flex-wrap gap-2">
+                            {% for skill in suggestion.profile.skills[:3] %}
+                            <span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">{{ skill.name }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="px-6 py-4 bg-gray-50 border-t flex space-x-2">
+                    <a href="{{ url_for('view_profile', user_type=suggestion.type, user_id=suggestion.user.id) }}" 
+                       class="flex-1 text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-white">
+                        View Profile
+                    </a>
+                    <form method="POST" action="{{ url_for('send_connection_request', user_type=suggestion.type, user_id=suggestion.user.id) }}" style="display:inline; flex: 1;">
+                        <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            Connect
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <p class="text-gray-500 text-lg mb-4">No suggestions available at the moment.</p>
+            <a href="{{ url_for('search_people') }}" class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Search for people
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

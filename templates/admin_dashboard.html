@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartEdu Admin Dashboard</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'dark-blue': '#0a1a2f',
+            'mid-blue': '#1f3b63',
+            'light-blue-bg': '#2a4a75',
+            'accent': '#d4a056',
+            'white': '#ffffff',
+          },
+          fontFamily: {
+            'sans': ['Open Sans', 'sans-serif'],
+            'serif': ['Merriweather', 'serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    body { font-family: 'Open Sans', sans-serif; background-color:#0a1a2f !important; }
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0a1a2f; }
+    ::-webkit-scrollbar-thumb { background: #1f3b63; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d4a056; }
+
+    .footer-slant { clip-path: polygon(0 20%, 100% 0, 100% 100%, 0% 100%); }
+    #footer-slant-container {
+        position: relative;
+        background: linear-gradient(to bottom right, #0a1a2f 0%, #0a1a2f 50%, transparent 50%, transparent 100%); 
+    }
+  </style>
+</head>
+
+<body class="flex min-h-screen text-white font-sans bg-dark-blue">
+
+  <aside id="sidebar" class="w-64 bg-dark-blue text-white shadow-xl flex flex-col transition-all duration-300 overflow-hidden whitespace-nowrap fixed h-full z-20">
+    <div class="p-6 flex items-center space-x-3 border-b border-gray-700">
+       <div class="w-8 h-8 rounded bg-accent text-dark-blue flex items-center justify-center font-serif font-bold">A</div>
+       <h1 class="text-xl font-serif text-accent">Admin Portal</h1>
+    </div>
+
+    <nav class="flex-grow p-4 space-y-2 overflow-y-auto">
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-2">Overview</div>
+      <a href="{{ url_for('admin_dashboard') }}" class="block w-full text-left p-3 rounded bg-mid-blue text-accent flex items-center">
+        Dashboard
+      </a>
+
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-4">Academics</div>
+      <a href="{{ url_for('list_grades') }}" class="block w-full text-left p-3 rounded hover:bg-mid-blue flex items-center transition">
+        Grades
+      </a>
+      <a href="{{ url_for('list_subjects') }}" class="block w-full text-left p-3 rounded hover:bg-mid-blue flex items-center transition">
+        Manage Subjects
+      </a>
+      <a href="{{ url_for('list_classes') }}" class="block w-full text-left p-3 rounded hover:bg-mid-blue flex items-center transition">
+        Manage Classes
+      </a>
+
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-4">People</div>
+      <a href="{{ url_for('list_teachers') }}" class="block w-full text-left p-3 rounded hover:bg-mid-blue flex items-center transition">
+        Faculty / Teachers
+      </a>
+      <a href="{{ url_for('list_students') }}" class="block w-full text-left p-3 rounded hover:bg-mid-blue flex items-center transition">
+        Students
+      </a>
+
+      <div class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 mt-4">Operations</div>
+      <a href="{{ url_for('view_class_subjects') }}" class="block w-full text-left p-3 rounded hover:bg-mid-blue flex items-center transition">
+        Course Mapping
+      </a>
+      
+      <div class="mt-8 pt-4 border-t border-gray-700">
+          <a href="{{ url_for('logout') }}" class="block w-full text-left p-3 rounded hover:bg-red-900 text-red-300 flex items-center transition">
+            Logout
+          </a>
+      </div>
+    </nav>
+  </aside>
+
+  <div id="main-content" class="flex-1 flex flex-col ml-64 min-h-screen transition-all duration-300">
+
+    <header class="bg-white shadow-sm p-4 flex justify-between items-center sticky top-0 z-10 text-dark-blue">
+      <div class="flex items-center">
+        <button onclick="toggleSidebar()" class="mr-4 text-dark-blue hover:text-accent focus:outline-none">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          </svg>
+        </button>
+        <h2 id="header-title" class="text-xl font-bold font-serif">Dashboard Overview</h2>
+      </div>
+
+      <div class="flex items-center space-x-4">
+        <span class="text-sm font-semibold text-gray-600 hidden md:inline">Administrator</span>
+        <div class="w-10 h-10 rounded-full bg-dark-blue text-white flex items-center justify-center font-bold shadow-md">AD</div>
+      </div>
+    </header>
+
+    <main class="p-8 bg-dark-blue text-white flex-grow">
+
+      <div class="mb-6">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="bg-{{ 'red' if category=='error' else 'blue' if category=='info' else 'green' if category=='success' else 'yellow' }}-100 border-l-4 border-{{ 'red' if category=='error' else 'blue' if category=='info' else 'green' if category=='success' else 'yellow' }}-500 text-{{ 'red' if category=='error' else 'blue' if category=='info' else 'green' if category=='success' else 'yellow' }}-700 p-4 mb-4 rounded shadow">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+      </div>
+
+      <div class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div class="bg-white p-6 rounded-lg shadow border-l-4 border-blue-500 text-dark-blue transform hover:scale-105 transition duration-300">
+            <p class="text-gray-500 text-sm font-semibold">Total Students</p>
+            <h3 class="text-3xl font-bold">{{ stats.total_students }}</h3>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow border-l-4 border-green-500 text-dark-blue transform hover:scale-105 transition duration-300">
+            <p class="text-gray-500 text-sm font-semibold">Total Teachers</p>
+            <h3 class="text-3xl font-bold">{{ stats.total_teachers }}</h3>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow border-l-4 border-purple-500 text-dark-blue transform hover:scale-105 transition duration-300">
+            <p class="text-gray-500 text-sm font-semibold">Total Classes</p>
+            <h3 class="text-3xl font-bold">{{ stats.total_classes }}</h3>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow border-l-4 border-yellow-500 text-dark-blue transform hover:scale-105 transition duration-300">
+            <p class="text-gray-500 text-sm font-semibold">Total Subjects</p>
+            <h3 class="text-3xl font-bold">{{ stats.total_subjects }}</h3>
+          </div>
+
+          <div class="bg-white p-6 rounded-lg shadow border-l-4 border-indigo-500 text-dark-blue transform hover:scale-105 transition duration-300">
+            <p class="text-gray-500 text-sm font-semibold">Active Teachers</p>
+            <h3 class="text-3xl font-bold">{{ stats.active_teachers }}</h3>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+
+    <footer class="mt-auto">
+      <div id="footer-slant-container">
+        <div class="footer-slant bg-mid-blue text-white pt-24 pb-10 px-8">
+            <h3 class="text-xl font-serif text-accent mb-2">SmartEdu Admin</h3>
+            <p class="text-xs text-gray-300">Restricted Access Area</p>
+            <p class="text-xs text-gray-400">&copy; 2025 SmartEdu Inc.</p>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        const mainContent = document.getElementById("main-content");
+
+        const isOpen = sidebar.classList.contains("w-64");
+
+        if (isOpen) {
+            sidebar.classList.replace("w-64", "w-0");
+            mainContent.classList.replace("ml-64", "ml-0");
+        } else {
+            sidebar.classList.replace("w-0", "w-64");
+            mainContent.classList.replace("ml-0", "ml-64");
+        }
+    }
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,103 @@
+{% extends "base_social.html" %}
+
+{% block title %}Alumni Directory{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="font-bold text-3xl text-gray-900">Alumni Directory</h1>
+            <p class="text-gray-600 mt-2">Connect with graduates and explore career paths</p>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <form method="GET" action="{{ url_for('alumni_directory') }}" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Graduation Year</label>
+                    <select name="year" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">All Years</option>
+                        {% for year in years %}
+                        <option value="{{ year }}" {% if selected_year == year %}selected{% endif %}>{{ year }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
+                    <input type="text" name="company" value="{{ company_filter }}" placeholder="Search by company..."
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex items-end">
+                    <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                        Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Alumni List -->
+        {% if alumni_list %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for item in alumni_list %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="p-6">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+                            {{ item.alumni.name[0] }}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-lg text-gray-900">{{ item.alumni.name }}</h3>
+                            <p class="text-sm text-gray-600">Class of {{ item.alumni.graduation_year }}</p>
+                        </div>
+                    </div>
+
+                    {% if item.alumni.current_position or item.alumni.current_company %}
+                    <div class="mb-3 p-3 bg-blue-50 rounded">
+                        {% if item.alumni.current_position %}
+                        <p class="font-medium text-gray-900">{{ item.alumni.current_position }}</p>
+                        {% endif %}
+                        {% if item.alumni.current_company %}
+                        <p class="text-sm text-gray-600">@ {{ item.alumni.current_company }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    {% if item.profile.bio %}
+                    <p class="text-gray-700 text-sm mb-4">{{ item.profile.bio[:100] }}...</p>
+                    {% endif %}
+
+                    <div class="flex space-x-2">
+                        <a href="{{ url_for('view_profile', user_type='alumni', user_id=item.alumni.alumni_id) }}" 
+                           class="flex-1 text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                            View Profile
+                        </a>
+                        {% if not item.connection_status %}
+                        <form method="POST" action="{{ url_for('send_connection_request', user_type='alumni', user_id=item.alumni.alumni_id) }}" style="display:inline; flex: 1;">
+                            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Connect
+                            </button>
+                        </form>
+                        {% elif item.connection_status == 'connected' %}
+                        <div class="flex-1 text-center px-4 py-2 bg-green-50 text-green-700 rounded-lg font-medium">
+                            ✓ Connected
+                        </div>
+                        {% else %}
+                        <div class="flex-1 text-center px-4 py-2 bg-yellow-50 text-yellow-700 rounded-lg font-medium">
+                            ⏳ Pending
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <p class="text-gray-500 text-lg">No alumni found with the selected filters.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
