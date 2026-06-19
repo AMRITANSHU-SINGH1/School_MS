@@ -126,12 +126,12 @@ The application heavily relies on dynamic file uploads. Ensure your server has t
 
 ## 👨‍💻 Author
 
-Developed and maintained by 
-**Amritanshu Singh**\n
-**Shudhanshu Ranjan**\n
-**Tanish Sharma**\n
-**Ananya Raj**\n
-**B Hasini**\n
-.
+Developed and maintained by <br>
+**Amritanshu Singh**<br>
+**Shudhanshu Ranjan**<br>
+**Tanish Sharma**<br>
+**Ananya Raj**<br>
+**B Hasini**<br>
+
 
 If you are contributing to this project, please ensure any new database models are accurately mapped in the `app.py` context and frontend templates are updated accordingly.
