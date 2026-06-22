@@ -1,0 +1,116 @@
+{% extends "base_social.html" %}
+
+{% block title %}Search People{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+            <h1 class="font-bold text-3xl text-gray-900 mb-6">Search People</h1>
+
+            <form method="GET" action="{{ url_for('search_people') }}" class="space-y-4">
+                <!-- Search Query -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Name or Email</label>
+                    <input type="text" name="q" value="{{ request.args.get('q', '') }}" placeholder="Search for people..."
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <!-- Filters -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">User Type</label>
+                        <select name="type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <option value="all">All Types</option>
+                            <option value="student" {% if request.args.get('type') == 'student' %}selected{% endif %}>Students</option>
+                            <option value="teacher" {% if request.args.get('type') == 'teacher' %}selected{% endif %}>Teachers</option>
+                            <option value="alumni" {% if request.args.get('type') == 'alumni' %}selected{% endif %}>Alumni</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Skill</label>
+                        <input type="text" name="skill" value="{{ request.args.get('skill', '') }}" placeholder="e.g., Python, Design"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Hobby</label>
+                        <input type="text" name="hobby" value="{{ request.args.get('hobby', '') }}" placeholder="e.g., Photography, Sports"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    </div>
+                </div>
+
+                <div class="flex space-x-4">
+                    <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 font-medium">
+                        Search
+                    </button>
+                    <a href="{{ url_for('search_people') }}" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                        Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Search Results -->
+        {% if results %}
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {% for result in results %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition">
+                <div class="p-6">
+                    <div class="flex items-center space-x-4 mb-4">
+                        <div class="w-16 h-16 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white text-2xl font-bold">
+                            {{ result.user.name[0] }}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-lg">{{ result.user.name }}</h3>
+                            <p class="text-sm text-gray-600">{{ result.type | title }}</p>
+                        </div>
+                    </div>
+
+                    {% if result.profile.headline %}
+                    <p class="text-gray-700 font-medium mb-3">{{ result.profile.headline }}</p>
+                    {% endif %}
+
+                    {% if result.profile.bio %}
+                    <p class="text-gray-600 text-sm mb-4">{{ result.profile.bio[:100] }}...</p>
+                    {% endif %}
+
+                    {% if result.common_skills %}
+                    <div class="mb-4">
+                        <p class="text-xs font-medium text-gray-600 mb-2">Common Skills</p>
+                        <div class="flex flex-wrap gap-2">
+                            {% for skill in result.common_skills[:3] %}
+                            <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">{{ skill }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="flex space-x-2">
+                        <a href="{{ url_for('view_profile', user_type=result.type, user_id=result.user.id) }}" 
+                           class="flex-1 text-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                            View Profile
+                        </a>
+                        <form method="POST" action="{{ url_for('send_connection_request', user_type=result.type, user_id=result.user.id) }}" style="display:inline; flex: 1;">
+                            <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Connect
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% elif request.args.get('q') or request.args.get('skill') or request.args.get('hobby') %}
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <p class="text-gray-500 text-lg">No results found. Try adjusting your search criteria.</p>
+        </div>
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <p class="text-gray-500 text-lg">Start searching to find people and connect with them!</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

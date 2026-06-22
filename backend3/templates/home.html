@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="bg-white shadow-lg rounded-lg p-8 max-w-4xl mx-auto">
+    <h1 class="text-4xl font-bold text-gray-800 mb-4">Welcome to School Management System</h1>
+    <p class="text-xl text-gray-600 mb-8">Select your portal to continue</p>
+    <div class="flex gap-4 justify-center">
+        <a href="{{ url_for('admin_login') }}" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-lg font-semibold">Admin Portal</a>
+        <a href="{{ url_for('teacher_login') }}" class="bg-green-500 hover:bg-green-600 text-white px-8 py-3 rounded-lg font-semibold">Teacher Portal</a>
+        <a href="{{ url_for('student_login') }}" class="bg-purple-500 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold">Student Portal</a>
+        <a href="{{ url_for('alumni_login') }}" class="bg-orange-500 hover:bg-purple-600 text-white px-8 py-3 rounded-lg font-semibold">Alumni Login</a>
+        
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,67 @@
+{% extends "base_social.html" %}
+
+{% block title %}Notifications{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <h1 class="font-bold text-3xl text-gray-900 mb-8">Notifications</h1>
+
+        {% if notifications %}
+        <div class="space-y-4">
+            {% for notif in notifications %}
+            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 {% if notif.type == 'connection_request' %}border-blue-500{% elif notif.type == 'skill_endorsement' %}border-green-500{% else %}border-gray-300{% endif %}">
+                <div class="flex items-center space-x-4">
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold flex-shrink-0">
+                        {{ notif.user.name[0] }}
+                    </div>
+                    <div class="flex-1">
+                        {% if notif.type == 'connection_request' %}
+                        <p class="text-gray-900">
+                            <a href="{{ url_for('view_profile', user_type=notif.user_type, user_id=notif.user.id) }}" class="font-bold hover:text-blue-600">
+                                {{ notif.user.name }}
+                            </a>
+                            <span class="text-gray-600">sent you a connection request</span>
+                        </p>
+                        {% if notif.connection.message %}
+                        <p class="text-gray-600 text-sm italic mt-1">{{ notif.connection.message }}</p>
+                        {% endif %}
+                        <p class="text-xs text-gray-500 mt-1">{{ notif.time.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                        <div class="flex space-x-2 mt-3">
+                            <form method="POST" action="{{ url_for('accept_connection', connection_id=notif.connection.id) }}" style="display:inline;">
+                                <button type="submit" class="px-4 py-1 bg-blue-600 text-white rounded text-sm hover:bg-blue-700">
+                                    Accept
+                                </button>
+                            </form>
+                            <form method="POST" action="{{ url_for('reject_connection', connection_id=notif.connection.id) }}" style="display:inline;">
+                                <button type="submit" class="px-4 py-1 border border-gray-300 text-gray-700 rounded text-sm hover:bg-gray-50">
+                                    Reject
+                                </button>
+                            </form>
+                        </div>
+                        {% elif notif.type == 'skill_endorsement' %}
+                        <p class="text-gray-900">
+                            <a href="{{ url_for('view_profile', user_type=notif.user_type, user_id=notif.user.id) }}" class="font-bold hover:text-blue-600">
+                                {{ notif.user.name }}
+                            </a>
+                            <span class="text-gray-600">endorsed your</span>
+                            <span class="font-bold text-green-600">{{ notif.skill }}</span>
+                            <span class="text-gray-600">skill</span>
+                        </p>
+                        <p class="text-xs text-gray-500 mt-1">{{ notif.time.strftime('%B %d, %Y at %I:%M %p') }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md p-12 text-center">
+            <p class="text-gray-500 text-lg">You're all caught up! No new notifications.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

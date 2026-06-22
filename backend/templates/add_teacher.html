@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Add Doctor</title>
+     <style>
+          body {
+               font-family: Arial, sans-serif;
+               background-color: #f5f5f5;
+               margin: 0;
+               padding: 0;
+          }
+          .container {
+               max-width: 650px;
+               margin: 40px auto;
+               background: #fff;
+               padding: 30px 40px;
+               border-radius: 10px;
+               box-shadow: 0 4px 16px rgba(0,0,0,0.07);
+          }
+          h1 {
+               color: #333;
+               text-align: center;
+               margin-bottom: 28px;
+          }
+          .form-group {
+               margin-bottom: 18px;
+          }
+          label {
+               display: block;
+               margin-bottom: 7px;
+               font-weight: 500;
+               color: #1976d2;
+          }
+          input[type="text"],
+          input[type="email"],
+          input[type="password"],
+          select {
+               width: 100%;
+               padding: 10px;
+               border-radius: 5px;
+               border: 1px solid #ccc;
+               font-size: 16px;
+               box-sizing: border-box;
+               margin-bottom: 3px;
+          }
+          .btn-submit {
+               background: #4CAF50;
+               color: white;
+               padding: 12px 29px;
+               border: none;
+               border-radius: 6px;
+               font-size: 16px;
+               cursor: pointer;
+               margin-top: 15px;
+               transition: background 0.2s;
+               display: block;
+               width: 100%;
+          }
+          .btn-submit:hover {
+               background: #357a38;
+          }
+          .back-link {
+               display: inline-block;
+               margin-bottom: 20px;
+               color: #1976d2;
+               text-decoration: none;
+               font-size: 15px;
+          }
+          .flash-message {
+               color: #d32f2f;
+               background: #fdecea;
+               border-radius: 6px;
+               margin-bottom: 16px;
+               padding: 10px 15px;
+               font-weight: bold;
+               text-align: center;
+          }
+     </style>
+</head>
+<body>
+     <div class="container">
+          <a href="/ADMIN-HOME" class="back-link">&larr; Admin Dashboard</a>
+          <h1>Add Doctor</h1>
+
+          {% with messages = get_flashed_messages() %}
+               {% if messages %}
+                    <div class="flash-message">
+                         {% for message in messages %}
+                              <p>{{ message }}</p>
+                         {% endfor %}
+                    </div>
+               {% endif %}
+          {% endwith %}
+
+          <form method="post" autocomplete="off">
+               <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" name="name" id="name" required>
+               </div>
+               <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email" required>
+               </div>
+               <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" required>
+               </div>
+               <div class="form-group">
+                    <label for="dept_id">Department:</label>
+                    <select name="dept_id" id="dept_id" required>
+                         {% for dept in departments %}
+                         <option value="{{ dept.dpt_id }}">{{ dept.dpt_id }}: {{dept.name}}</option>
+                         {% endfor %}
+                         <option value="None">None</option>
+                    </select>
+               </div>
+               <div class="form-group">
+                    <label for="spec">Specialization:</label>
+                    <input type="text" name="spec" id="spec" required>
+               </div>
+               <button type="submit" class="btn-submit">Add Doctor</button>
+          </form>
+     </div>
+</body>
+</html>

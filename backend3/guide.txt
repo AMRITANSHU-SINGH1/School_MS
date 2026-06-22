@@ -1,0 +1,437 @@
+# Student Management System - Phase 2: Social Network Implementation Guide
+
+## 📋 Overview
+
+Phase 2 adds a LinkedIn-style social networking platform where students, teachers, and alumni can:
+- Create detailed profiles with achievements, skills, and experience
+- Connect with each other
+- Share posts and interact
+- Search by skills, hobbies, and achievements
+- Browse alumni directory
+- Endorse skills
+
+## 🚀 Quick Start
+
+### Step 1: Add Models to app.py
+
+Add all the models from the first artifact (`sms_phase2_social`) to your `app.py` file after your existing models. This includes:
+
+- `UserProfile` - Extended profile for all users
+- `Alumni` - Alumni user accounts
+- `Achievement` - Awards and achievements
+- `Skill` - Skills with endorsements
+- `SkillEndorsement` - Skill endorsements
+- `Experience` - Work experience/internships
+- `Hobby` - Interests and hobbies
+- `Connection` - Network connections
+- `Post` - Social posts
+- `PostLike` - Post likes
+- `PostComment` - Post comments
+
+### Step 2: Add Routes
+
+Add all routes from the three route artifacts:
+1. `sms_phase2_social` - Authentication, profile, achievements, skills, experience, hobbies
+2. `sms_phase2_routes` - Connections, search, discovery, alumni
+3. `sms_phase2_posts` - Posts, likes, comments, notifications, API endpoints
+
+### Step 3: Create Upload Folders
+
+Add these lines after your existing folder creation:
+
+```python
+os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'profiles'), exist_ok=True)
+os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'], 'posts'), exist_ok=True)
+```
+
+### Step 4: Create Templates
+
+Create these templates in your `templates/` directory:
+
+#### Required Templates:
+
+1. **social_nav.html** - Shared navigation bar
+2. **social_dashboard.html** - Main feed (provided above)
+3. **view_profile.html** - User profile page (provided above)
+4. **search_people.html** - Search interface (provided above)
+5. **my_connections.html** - Network management
+6. **discover.html** - Discover new connections
+7. **alumni_directory.html** - Alumni listing
+8. **alumni_register.html** - Alumni registration
+9. **alumni_login.html** - Alumni login
+10. **edit_profile.html** - Profile editing
+11. **create_post.html** - Create new post
+12. **view_post.html** - Single post view
+13. **add_achievement.html** - Add achievement
+14. **add_skill.html** - Add skill
+15. **add_experience.html** - Add experience
+16. **add_hobby.html** - Add hobby
+17. **social_notifications.html** - Notifications
+18. **list_alumni.html** - Admin alumni management
+19. **add_alumni.html** - Admin add alumni
+
+### Step 5: Update Database
+
+Run this in Python shell to create the new tables:
+
+```python
+from app import app, db
+with app.app_context():
+    db.create_all()
+    print("Database updated!")
+```
+
+### Step 6: Update Existing Login Routes
+
+Update your existing logout route to handle alumni:
+
+```python
+@app.route('/logout')
+def logout():
+    user_type = session.get('user_type')
+    session.clear()
+    flash('You have been logged out', 'info')
+    
+    if user_type == 'admin':
+        return redirect(url_for('admin_login'))
+    elif user_type == 'teacher':
+        return redirect(url_for('teacher_login'))
+    elif user_type == 'alumni':
+        return redirect(url_for('alumni_login'))
+    else:
+        return redirect(url_for('student_login'))
+```
+
+## 📁 File Structure
+
+```
+your_project/
+├── app.py (updated with new models and routes)
+├── templates/
+│   ├── base.html (existing)
+│   ├── home.html (update to add social network link)
+│   ├── social_nav.html (NEW)
+│   ├── social_dashboard.html (NEW)
+│   ├── view_profile.html (NEW)
+│   ├── edit_profile.html (NEW)
+│   ├── search_people.html (NEW)
+│   ├── my_connections.html (NEW)
+│   ├── discover.html (NEW)
+│   ├── alumni_directory.html (NEW)
+│   ├── alumni_register.html (NEW)
+│   ├── alumni_login.html (NEW)
+│   ├── create_post.html (NEW)
+│   ├── view_post.html (NEW)
+│   ├── add_achievement.html (NEW)
+│   ├── add_skill.html (NEW)
+│   ├── add_experience.html (NEW)
+│   ├── add_hobby.html (NEW)
+│   ├── social_notifications.html (NEW)
+│   ├── list_alumni.html (NEW)
+│   └── add_alumni.html (NEW)
+└── static/
+    └── uploads/
+        ├── profiles/ (NEW)
+        ├── posts/ (NEW)
+        ├── assignments/ (existing)
+        └── submissions/ (existing)
+```
+
+## 🎨 Template Examples
+
+### social_nav.html - Shared Navigation
+
+```html
+<nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center space-x-8">
+                <a href="{{ url_for('social_dashboard') }}" class="text-2xl font-bold text-blue-600">
+                    🎓 ConnectED
+                </a>
+                <div class="hidden md:flex space-x-4">
+                    <a href="{{ url_for('social_dashboard') }}" class="px-3 py-2 text-gray-700 hover:text-blue-600">Feed</a>
+                    <a href="{{ url_for('my_connections') }}" class="px-3 py-2 text-gray-600 hover:text-blue-600">Network</a>
+                    <a href="{{ url_for('discover') }}" class="px-3 py-2 text-gray-600 hover:text-blue-600">Discover</a>
+                    <a href="{{ url_for('alumni_directory') }}" class="px-3 py-2 text-gray-600 hover:text-blue-600">Alumni</a>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <form action="{{ url_for('search_people') }}" method="GET" class="hidden md:block">
+                    <input type="text" name="q" placeholder="Search people..." 
+                           class="px-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 w-64">
+                </form>
+                <a href="{{ url_for('my_profile') }}" class="text-gray-600 hover:text-blue-600">Profile</a>
+                <a href="{{ url_for('logout') }}" class="text-red-600 hover:text-red-700">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+```
+
+### my_connections.html - Network Management
+
+```html
+{% extends "base.html" %}
+
+{% block title %}My Network{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50">
+    {% include 'social_nav.html' %}
+    
+    <div class="max-w-5xl mx-auto px-4 py-8">
+        <!-- Pending Requests -->
+        {% if pending_requests %}
+        <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+                Connection Requests ({{ pending_requests|length }})
+            </h2>
+            <div class="space-y-4">
+                {% for item in pending_requests %}
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                            {{ item.user.name[0] }}
+                        </div>
+                        <div>
+                            <a href="{{ url_for('view_profile', user_type=item.type, user_id=item.user.id) }}" 
+                               class="font-semibold text-gray-900 hover:text-blue-600">
+                                {{ item.user.name }}
+                            </a>
+                            <p class="text-sm text-gray-600">{{ item.profile.headline or 'Professional' }}</p>
+                            {% if item.request.message %}
+                            <p class="text-sm text-gray-500 mt-2 italic">"{{ item.request.message }}"</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="flex space-x-2">
+                        <form action="{{ url_for('accept_connection', connection_id=item.request.id) }}" method="POST">
+                            <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                Accept
+                            </button>
+                        </form>
+                        <form action="{{ url_for('reject_connection', connection_id=item.request.id) }}" method="POST">
+                            <button type="submit" class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                                Reject
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- My Connections -->
+        <div class="bg-white rounded-lg shadow-sm p-6">
+            <h2 class="text-xl font-bold text-gray-900 mb-4">
+                My Connections ({{ connections|length }})
+            </h2>
+            {% if connections %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for conn in connections %}
+                <div class="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50">
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ url_for('view_profile', user_type=conn.type, user_id=conn.user.id) }}">
+                            <div class="w-12 h-12 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
+                                {{ conn.user.name[0] }}
+                            </div>
+                        </a>
+                        <div>
+                            <a href="{{ url_for('view_profile', user_type=conn.type, user_id=conn.user.id) }}" 
+                               class="font-semibold text-gray-900 hover:text-blue-600">
+                                {{ conn.user.name }}
+                            </a>
+                            <p class="text-sm text-gray-600">{{ conn.profile.headline or 'Professional' }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p class="text-gray-500 text-center py-8">No connections yet. Start connecting with others!</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+```
+
+## 🔧 Key Features
+
+### 1. Profile Management
+- Extended profiles for all user types
+- Profile pictures and cover photos
+- Headline and bio
+- Privacy settings
+- Social media links
+
+### 2. Achievements System
+- Add achievements with categories
+- Date, issuer, and description
+- Certificate URLs
+- Display on profile
+
+### 3. Skills & Endorsements
+- Add skills with proficiency levels
+- Other users can endorse skills
+- Skill categories
+- Search by skills
+
+### 4. Experience Tracking
+- Work experience/internships
+- Current and past positions
+- Company and location
+- Date ranges
+
+### 5. Hobbies & Interests
+- Add hobbies with categories
+- Search by hobbies
+- Display on profile
+
+### 6. Connection System
+- Send connection requests
+- Accept/reject requests
+- Connection messages
+- View network
+
+### 7. Social Feed
+- Create posts with images
+- Like and comment
+- View connection posts
+- Edit/delete own posts
+
+### 8. Search & Discovery
+- Search by name, email
+- Filter by skills, hobbies, achievements
+- Filter by user type
+- Discover suggestions
+
+### 9. Alumni Features
+- Alumni registration and login
+- Alumni directory
+- Filter by graduation year, company
+- Admin can manage alumni
+
+## 🎯 User Flows
+
+### Student Flow:
+1. Login → Social Dashboard
+2. Complete Profile (bio, skills, hobbies)
+3. Add Achievements
+4. Search for connections
+5. Send connection requests
+6. Create posts
+7. Interact with feed
+
+### Teacher Flow:
+1. Login → Social Dashboard
+2. Complete Profile
+3. Add professional experience
+4. Connect with students/alumni
+5. Share educational content
+6. Endorse student skills
+
+### Alumni Flow:
+1. Register → Login
+2. Complete Profile (current company, position)
+3. Add work experience
+4. Connect with students for mentorship
+5. Share career advice
+6. Browse alumni directory
+
+### Admin Flow:
+1. Login → Admin Dashboard
+2. Add/manage alumni accounts
+3. Monitor social activity
+4. Manage connections
+
+## 🔒 Security Features
+
+- Authentication required for all social routes
+- Profile privacy settings
+- Own-profile checks for editing
+- Connection verification
+- CSRF protection (Flask-WTF recommended)
+
+## 📱 Responsive Design
+
+All templates use Tailwind CSS for:
+- Mobile-first design
+- Responsive navigation
+- Grid layouts
+- Card components
+- Form styling
+
+## 🚀 Next Steps
+
+1. **Add base.html updates** - Include Tailwind CDN if not already present
+2. **Create remaining templates** - Use provided examples as guide
+3. **Test all flows** - Student, teacher, alumni, admin
+4. **Add profile pictures** - Implement file upload handling
+5. **Optimize queries** - Add indexes for better performance
+6. **Add notifications** - Real-time connection requests
+7. **Email notifications** - Alert users of new connections/endorsements
+8. **Analytics** - Track profile views, connection growth
+
+## 🐛 Common Issues & Solutions
+
+### Issue: Profile not loading
+**Solution:** Ensure `get_user_profile()` is creating profiles automatically
+
+### Issue: Images not displaying
+**Solution:** Check `UPLOAD_FOLDER` path and file permissions
+
+### Issue: Session errors
+**Solution:** Verify `secret_key` is set and users are logged in
+
+### Issue: Connection duplicate errors
+**Solution:** Check for existing connections before creating new ones
+
+## 📚 Additional Features to Consider
+
+1. **Messaging System** - Direct messages between connections
+2. **Groups/Communities** - Subject-based groups
+3. **Events** - College events and meetups
+4. **Recommendations** - Job/internship recommendations
+5. **Mentorship** - Alumni-student mentorship matching
+6. **Analytics Dashboard** - Profile analytics
+7. **Export Resume** - Generate PDF resume from profile
+8. **Skill Assessments** - Skill verification tests
+9. **Recommendation Letters** - Teachers can write recommendations
+10. **Career Resources** - Job board, interview prep
+
+## 📞 Support
+
+For issues or questions:
+1. Check the implementation guide
+2. Review error logs
+3. Verify database migrations
+4. Check template paths
+5. Ensure all dependencies are installed
+
+## ✅ Testing Checklist
+
+- [ ] All models created in database
+- [ ] Alumni can register and login
+- [ ] Students can access social dashboard
+- [ ] Teachers can access social dashboard
+- [ ] Profiles can be viewed and edited
+- [ ] Achievements can be added/deleted
+- [ ] Skills can be added/endorsed/deleted
+- [ ] Experience can be added/deleted
+- [ ] Hobbies can be added/deleted
+- [ ] Connection requests work
+- [ ] Posts can be created/liked/commented
+- [ ] Search works with filters
+- [ ] Alumni directory displays correctly
+- [ ] Profile pictures upload correctly
+- [ ] Privacy settings work
+- [ ] Admin can manage alumni
+
+---
+
+**Happy Coding! 🚀**
+
+If you need any specific template or have questions about implementation, let me know!

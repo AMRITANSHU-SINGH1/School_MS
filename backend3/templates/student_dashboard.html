@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% block title %}Student Dashboard{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-2">Welcome, {{ student.name }}</h2>
+<p class="text-gray-600 mb-6">{{ student.student_id }} | {{ student.class_obj.name if student.class_obj else 'No class assigned' }}</p>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-gray-600 text-lg mb-2">Attendance</h3>
+        <p class="text-4xl font-bold text-blue-500">{{ stats.attendance_percentage }}%</p>
+    </div>
+    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-gray-600 text-lg mb-2">Subjects</h3>
+        <p class="text-4xl font-bold text-green-500">{{ stats.total_subjects }}</p>
+    </div>
+    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-gray-600 text-lg mb-2">Pending Assignments</h3>
+        <p class="text-4xl font-bold text-yellow-500">{{ stats.pending_assignments }}</p>
+    </div>
+    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-gray-600 text-lg mb-2">Marks Entries</h3>
+        <p class="text-4xl font-bold text-purple-500">{{ stats.total_marks_entries }}</p>
+    </div>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+    <div>
+        <h4 class="text-2xl font-bold text-gray-800 mb-4">Recent Marks</h4>
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Subject</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Exam</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Marks</th>
+                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">%</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for m in recent_marks %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-4 py-3 text-sm text-gray-900">{{ m.class_subject.subject.name }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">{{ m.exam_type }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">{{ m.marks_obtained }}/{{ m.total_marks }}</td>
+                        <td class="px-4 py-3 text-sm text-gray-900">{{ "%.1f"|format(m.percentage) }}%</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div>
+        <h4 class="text-2xl font-bold text-gray-800 mb-4">Pending Assignments</h4>
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            {% if pending_assignments %}
+            <ul class="space-y-3">
+                {% for a in pending_assignments %}
+                <li class="flex justify-between items-center border-b border-gray-200 pb-3">
+                    <div>
+                        <p class="font-semibold text-gray-800">{{ a.title }}</p>
+                        <p class="text-sm text-gray-600">{{ a.class_subject.subject.name }}</p>
+                    </div>
+                    <span class="px-3 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">Due: {{ a.due_date }}</span>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-gray-500">No pending assignments</p>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<div>
+    <h4 class="text-2xl font-bold text-gray-800 mb-4">Latest Notifications</h4>
+    {% for n in notifications %}
+    <div class="bg-{{ 'red' if n.is_urgent else 'blue' }}-50 border-l-4 border-{{ 'red' if n.is_urgent else 'blue' }}-500 p-4 mb-4 rounded">
+        <div class="flex justify-between items-start">
+            <div>
+                <p class="font-bold text-gray-800">{{ n.title }}</p>
+                <p class="text-gray-700 mt-1">{{ n.message }}</p>
+            </div>
+            <span class="text-xs text-gray-500">{{ n.date.strftime('%Y-%m-%d') }}</span>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

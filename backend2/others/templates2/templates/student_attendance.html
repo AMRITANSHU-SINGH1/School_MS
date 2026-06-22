@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block title %}My Attendance{% endblock %}
+{% block content %}
+<h2 class="text-3xl font-bold text-gray-800 mb-6">My Attendance</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+    <div class="bg-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-gray-600 text-lg mb-2">Total Days</h3>
+        <p class="text-4xl font-bold text-gray-700">{{ stats.total }}</p>
+    </div>
+    <div class="bg-green-500 text-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-lg mb-2">Present</h3>
+        <p class="text-4xl font-bold">{{ stats.present }}</p>
+    </div>
+    <div class="bg-red-500 text-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-lg mb-2">Absent</h3>
+        <p class="text-4xl font-bold">{{ stats.absent }}</p>
+    </div>
+    <div class="bg-yellow-500 text-white shadow-lg rounded-lg p-6 text-center">
+        <h3 class="text-lg mb-2">Late</h3>
+        <p class="text-4xl font-bold">{{ stats.late }}</p>
+    </div>
+</div>
+
+<div class="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6 rounded">
+    <p class="text-lg"><strong>Overall Attendance:</strong> <span class="text-2xl font-bold text-blue-600">{{ stats.percentage }}%</span></p>
+</div>
+
+<h4 class="text-2xl font-bold text-gray-800 mb-4">Subject-wise Breakdown</h4>
+<div class="bg-white shadow-lg rounded-lg overflow-hidden mb-6">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Present</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Absent</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Late</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">%</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for subject, data in subject_wise.items() %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ subject }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ data.present }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ data.absent }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ data.late }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ data.total }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">{{ data.percentage }}%</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h4 class="text-2xl font-bold text-gray-800 mb-4">All Records</h4>
+<div class="bg-white shadow-lg rounded-lg overflow-hidden">
+    <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Remarks</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+            {% for att in attendances %}
+            <tr class="hover:bg-gray-50">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ att.date }}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ att.class_subject.subject.name if att.class_subject else '' }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-{{ 'green' if att.status == 'Present' else 'red' if att.status == 'Absent' else 'yellow' }}-100 text-{{ 'green' if att.status == 'Present' else 'red' if att.status == 'Absent' else 'yellow' }}-800">
+                        {{ att.status }}
+                    </span>
+                </td>
+                <td class="px-6 py-4 text-sm text-gray-900">{{ att.remarks }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
